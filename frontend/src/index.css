@@ -1,0 +1,11 @@
+:root {
+  --customSky: #44C7F4;
+  --customOrange: #EC5424;
+  --customBlack: #16214D;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Roboto Serif', serif;
+}
