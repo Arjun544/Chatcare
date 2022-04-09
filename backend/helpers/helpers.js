@@ -49,17 +49,23 @@ exports.verifyRefreshToken = (token) =>
   jwt.verify(token, process.env.JWT_REFRESH_TOKEN_SECRET);
 
 exports.findRefreshToken = async (userId, refreshToken) => {
-  return await prisma.token.findUnique({
+  const token = await prisma.token.findMany({
     where: {
       token: refreshToken,
+      userId: userId,
     },
   });
+  return token;
 };
 
-exports.updateRefreshToken = async (userId, refreshToken) => {
+exports.updateRefreshToken = async (
+  userId,
+  refreshToken,
+  refreshTokenFromCookie
+) => {
   return await prisma.token.update({
     where: {
-      userId: userId,
+      token: refreshTokenFromCookie,
     },
     data: {
       token: refreshToken,

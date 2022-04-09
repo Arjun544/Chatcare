@@ -37,7 +37,7 @@ const Login = () => {
     } catch (error) {
       console.log(error);
       setIsLoading(false);
-      toast.error(error.message);
+      toast.error("Something went wrong");
     }
   };
 

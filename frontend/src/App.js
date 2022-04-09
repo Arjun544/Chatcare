@@ -5,7 +5,8 @@ import WidgetLoader from "./components/WidgetLoader";
 import Main from "./pages/Main";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
-import { GuestRoute } from "./protected_routes";
+import { RequireAuth } from "./helpers/RequireAuth";
+import { useRefreshHook } from "./helpers/useRefreshHook";
 
 const Login = lazy(() => import("./pages/Login/Login"));
 const Register = lazy(() => import("./pages/Register/Register"));
@@ -14,6 +15,9 @@ const Verification = lazy(() => import("./pages/Verification/Verification"));
 function App() {
   const socketUrl = "http://localhost:5000";
   let socket = useRef(null);
+
+  // call refresh endpoint
+  const { loading } = useRefreshHook();
 
   useEffect(() => {
     socket.current = io(socketUrl, {
@@ -28,6 +32,10 @@ function App() {
     });
   }, []);
 
+  if (loading) {
+    return <WidgetLoader />;
+  }
+
   return (
     <div className="App">
       <Toaster
@@ -38,7 +46,7 @@ function App() {
         }}
       />
       <Routes>
-        {/* <Route
+        <Route
           path="/register"
           element={
             <Suspense fallback={<WidgetLoader />}>
@@ -61,23 +69,16 @@ function App() {
               <Verification />
             </Suspense>
           }
-        /> */}
-        <GuestRoute path="/register">
-          <Suspense fallback={<WidgetLoader />}>
-            <Register />
-          </Suspense>
-        </GuestRoute>
-        <GuestRoute path="/login">
-          <Suspense fallback={<WidgetLoader />}>
-            <Login />
-          </Suspense>
-        </GuestRoute>
-        <GuestRoute path="/verification">
-          <Suspense fallback={<WidgetLoader />}>
-            <Verification />
-          </Suspense>
-        </GuestRoute>
-        <Route path="*" element={<Main />} />
+        />
+
+        <Route
+          path="*"
+          element={
+            <RequireAuth>
+              <Main />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </div>
   );

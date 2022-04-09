@@ -6,6 +6,9 @@ const {
   hashPassword,
   generateTokens,
   comparePassword,
+  verifyRefreshToken,
+  findRefreshToken,
+  updateRefreshToken,
 } = require("../helpers/helpers");
 
 exports.register = async (req, res) => {
@@ -89,7 +92,7 @@ exports.register = async (req, res) => {
       isActivited: false,
     });
     // Store refresh token
-    await storeRefreshToken(refreshToken, newUser.email);
+    await storeRefreshToken(refreshToken, newUser.id);
     // Set cookie
     res.cookie("refreshToken", refreshToken, {
       maxAge: 1000 * 60 * 60 * 24 * 30,
@@ -234,7 +237,7 @@ exports.login = async (req, res) => {
       isActivited: false,
     });
     // Store refresh token
-    await storeRefreshToken(refreshToken, user.email);
+    await storeRefreshToken(refreshToken, user.id);
     // Set cookie
     res.cookie("refreshToken", refreshToken, {
       maxAge: 1000 * 60 * 60 * 24 * 30,
@@ -433,4 +436,68 @@ exports.resetPassword = async (req, res) => {
       message: error.message,
     });
   }
+};
+
+exports.refresh = async (req, res) => {
+  // get refresh token from cookie
+  const { refreshToken: refreshTokenFromCookie } = req.cookies;
+  // check if token is valid
+  let userData;
+  try {
+    userData = await verifyRefreshToken(refreshTokenFromCookie);
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid Token" });
+  }
+  // Check if token is in db
+  try {
+    const token = await findRefreshToken(userData.id, refreshTokenFromCookie);
+    if (token.length === 0) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Can't find token" });
+  }
+  // check if valid user
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userData.id,
+    },
+  });
+  if (!user) {
+    return res.status(404).json({ message: "No user" });
+  }
+  // Generate new tokens
+  const { refreshToken, accessToken } = generateTokens({
+    id: userData.id,
+    isActivited: false,
+  });
+
+  // Update refresh token
+  try {
+    await updateRefreshToken(userData.id, refreshToken, refreshTokenFromCookie);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Can't update refresh token" });
+  }
+  // put in cookie
+  res.cookie("refreshToken", refreshToken, {
+    maxAge: 1000 * 60 * 60 * 24 * 30,
+    httpOnly: true,
+  });
+
+  res.cookie("accessToken", accessToken, {
+    maxAge: 1000 * 60 * 60 * 24 * 30,
+    httpOnly: true,
+  });
+  res.json({
+    user: {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      active: user.active,
+      profile: user.profile,
+      location: user.location,
+    },
+    isAuth: true,
+  });
 };
