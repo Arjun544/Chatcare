@@ -73,10 +73,9 @@ exports.updateRefreshToken = async (
   });
 };
 
-exports.removeToken = async (id, refreshToken) => {
-  return await prisma.token.deleteMany({
+exports.removeToken = async (refreshToken) => {
+  return await prisma.token.delete({
     where: {
-      id: id,
       token: refreshToken,
     },
   });

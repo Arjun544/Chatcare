@@ -9,6 +9,7 @@ const {
   verifyRefreshToken,
   findRefreshToken,
   updateRefreshToken,
+  removeToken,
 } = require("../helpers/helpers");
 
 exports.register = async (req, res) => {
@@ -373,7 +374,6 @@ exports.sendCode = async (req, res) => {
       isAuth: true,
     });
   } catch (error) {
-    console.error("reset-password-error", error);
     return res.status(500).json({
       error: true,
       message: error.message,
@@ -430,7 +430,6 @@ exports.resetPassword = async (req, res) => {
       message: "Password has been changed",
     });
   } catch (error) {
-    console.error("reset-password-error", error);
     return res.status(500).json({
       error: true,
       message: error.message,
@@ -500,4 +499,152 @@ exports.refresh = async (req, res) => {
     },
     isAuth: true,
   });
+};
+
+exports.logout = async (req, res) => {
+  const { refreshToken } = req.cookies;
+  // delete refresh token from db
+  await removeToken(refreshToken);
+  // delete cookies
+  res.clearCookie("refreshToken");
+  res.clearCookie("accessToken");
+  res.json({ user: null, isAuth: false });
+};
+
+exports.gmailLogin = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Check if email already exists
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        active: true,
+        profile: true,
+        location: true,
+      },
+    });
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found, please signup",
+      });
+    }
+
+    // Generate token
+    const { accessToken, refreshToken } = generateTokens({
+      id: newUser.id,
+      isActivited: false,
+    });
+    // Store refresh token
+    await storeRefreshToken(refreshToken, newUser.id);
+    // Set cookie
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      httpOnly: true,
+    });
+
+    res.cookie("accessToken", accessToken, {
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      httpOnly: true,
+    });
+
+    return res.json({
+      success: true,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        active: user.active,
+        profile: user.profile,
+        location: user.location,
+      },
+      isAuth: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      error: true,
+      message: error.message,
+    });
+  }
+};
+
+exports.gmailSignup = async (req, res) => {
+  const { username, email, profile } = req.body;
+
+  try {
+    // Check if email already exists
+    const hasUser = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+      select: {
+        email: true,
+      },
+    });
+
+    if (hasUser) {
+      return res.json({
+        success: false,
+        message: "Email already exists, please login",
+      });
+    }
+
+    // Register user
+    const user = await prisma.user.create({
+      data: {
+        username,
+        email,
+        password: "",
+        emailToken: 1,
+        emailTokenExpires: new Date(),
+        resetPasswordToken: 1,
+        resetPasswordExpires: new Date(),
+        profile: profile,
+        profileId: "",
+        location: "",
+      },
+    });
+
+    // Generate token
+    const { accessToken, refreshToken } = generateTokens({
+      id: user.id,
+      isActivited: false,
+    });
+    // Store refresh token
+    await storeRefreshToken(refreshToken, user.id);
+    // Set cookie
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      httpOnly: true,
+    });
+
+    res.cookie("accessToken", accessToken, {
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      httpOnly: true,
+    });
+
+    return res.json({
+      success: true,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        active: user.active,
+        profile: user.profile,
+        location: user.location,
+      },
+      isAuth: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Server Error");
+  }
 };

@@ -5,7 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { RotateSpinner } from "react-spinners-kit";
-import { register } from "../../services/auth_services";
+import { gmailSignup, register } from "../../services/auth_services";
 
 import styles from "./Register.module.css";
 import { useDispatch } from "react-redux";
@@ -120,53 +120,64 @@ const Login = () => {
             </button>
           )}
         </form>
-        <GoogleLogin
-          clientId={123}
-          buttonText="Continue with Google"
-          render={(renderProps) => (
-            <button
-              className={styles.googleBtnWrapper}
-              onClick={renderProps.onClick}
-              disabled={false}
-            >
-              <div className={styles.gmailBtn}>
-                <FcGoogle fontSize={25} />
-                <span className="text-sm font-semibold tracking-wider text-sky-500">
-                  Register with Google
-                </span>
-              </div>
-            </button>
-          )}
-          onSuccess={async (response) => {
-            // try {
-            //   setIsGmailLoading(true);
-            //   const { data } = await gmailLogin(response.profileObj.email);
-            //   setIsGmailLoading(false);
-            //   if (data.success === false) {
-            //     return toast.error(data.message);
-            //   }
-            //   // Add user to redux
-            //   if (data.success === true) {
-            //     dispatch(
-            //       setAuth({
-            //         auth: data.auth,
-            //         user: data.user,
-            //       })
-            //     );
-            //     data.user.companyId === null
-            //       ? router.push("/addDetails", { query: true })
-            //       : router.push("/");
-            //   }
-            // } catch (error) {
-            //   setIsGmailLoading(false);
-            //   console.log(error);
-            //   return toast.error(error.message);
-            // }
-          }}
-          // onFailure={(response) => toast.error(response.details)}
-          onFailure={(response) => console.log(response)}
-          cookiePolicy={"single_host_origin"}
-        />
+        {isGmailLoading ? (
+          <RotateSpinner
+            sty
+            size={30}
+            color="#44C7F4"
+            loading={isGmailLoading}
+          />
+        ) : (
+          <GoogleLogin
+            clientId={process.env.REACT_APP_GMAIL_CLIENT_ID}
+            buttonText="Continue with Google"
+            render={(renderProps) => (
+              <button
+                className={styles.googleBtnWrapper}
+                onClick={renderProps.onClick}
+                disabled={false}
+              >
+                <div className={styles.gmailBtn}>
+                  <FcGoogle fontSize={25} />
+                  <span className="text-sm font-semibold tracking-wider text-sky-500">
+                    Register with Google
+                  </span>
+                </div>
+              </button>
+            )}
+            onSuccess={async (response) => {
+              try {
+                setIsGmailLoading(true);
+                const { data } = await gmailSignup(
+                  response.profileObj.name,
+                  response.profileObj.email,
+                  response.profileObj.imageUrl
+                );
+                setIsGmailLoading(false);
+                if (data.success === false) {
+                  return toast.error(data.message);
+                }
+                // Add user to redux
+                if (data.success === true) {
+                  dispatch(
+                    setAuth({
+                      isAuth: data.isAuth,
+                      user: data.user,
+                    })
+                  );
+                  toast.success("Register Successfully");
+                  navigate("/");
+                }
+              } catch (error) {
+                setIsGmailLoading(false);
+                console.log(error);
+                return toast.error(error.message);
+              }
+            }}
+            onFailure={(response) => toast.error("Something went wrong")}
+            cookiePolicy={"single_host_origin"}
+          />
+        )}
         <div className={styles.createAccountWrapper}>
           <span>Already have an account?</span>
           <span
