@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
+import Navbar from "../components/Navbar/Navbar";
 import WidgetLoader from "../components/WidgetLoader";
 // import NotFound from "./NotFound";
 
@@ -9,8 +10,10 @@ const Main = () => {
   //   useDarkMode();
 
   return (
-    <div className="flex h-full w-full ">
-      {/* <SideBar isSideBarExpanded={isSideBarExpanded} /> */}
+    <div style={{
+      display: "flex",
+    }}>
+      <Navbar  />
       <Routes>
         <Route
           path="/"

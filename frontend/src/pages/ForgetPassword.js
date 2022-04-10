@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { BsFillShieldLockFill } from "react-icons/bs";
-import ReactPinField from "react-pin-field";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RotateSpinner } from "react-spinners-kit";
 import Logo from "../components/Logo";
-import { setAuth } from "../redux/reducers/authSlice";
 import { forgetPassword } from "../services/auth_services";
 
 import styles from "./Verification/Verification.module.css";
@@ -39,7 +36,9 @@ const ForgetPassword = () => {
     <div className={styles.mainWrapper}>
       <div className={styles.logoWrapper}>
         <Logo />
-        <h1>ChatCare</h1>
+        <h3 style={{
+          letterSpacing: "0.5px",
+        }}>ChatCare</h3>
       </div>
       <form
         action="submit"

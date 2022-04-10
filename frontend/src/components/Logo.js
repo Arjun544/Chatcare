@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
-const Logo = () => {
+const Logo = ({ height = "62", width = "62" }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="62.5"
-      height="62.5"
+      width={width}
+      height={height}
       viewBox="0 0 62.5 62.5"
     >
       <g id="webapp" transform="translate(0 0)">
@@ -32,6 +32,6 @@ const Logo = () => {
       </g>
     </svg>
   );
-}
+};
 
-export default Logo
+export default Logo;

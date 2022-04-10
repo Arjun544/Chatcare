@@ -1,0 +1,53 @@
+.navContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: Space-between;
+  height: 100vh;
+  width: 4%;
+  background-color: #ffffff;
+}
+
+.logoWrapper {
+  padding-top: 20px;
+}
+
+.activeStyle {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  color: var(--customSky);
+  background-image: linear-gradient(to right, #81d5f15b, white);
+  padding: 10px 0px;
+  border-left: 3px solid var(--customSky);
+  justify-content: space-between;
+  margin-left: 4px;
+  transition: all 500ms ease;
+}
+
+.activeStyle:hover {
+  color: var(--customSky);
+  transition: transform 2s,
+}
+
+.isNotActiveStyle {
+  color: #e2e2e2;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  padding: 10px 0px;
+  justify-content: space-between;
+  margin-left: 4px;
+  transition: all 500ms ease;
+}
+
+.isNotActiveStyle:hover {
+  color: var(--customSky);
+  
+}
+
+.premiumWrapper {
+  padding-bottom: 20px;
+}

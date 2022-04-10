@@ -68,7 +68,13 @@ const Verification = () => {
     <div className={styles.mainWrapper}>
       <div className={styles.logoWrapper}>
         <Logo />
-        <h1>ChatCare</h1>
+        <h3
+          style={{
+            letterSpacing: "0.5px",
+          }}
+        >
+          ChatCare
+        </h3>
       </div>
 
       {!user.active === true ? (

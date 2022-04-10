@@ -3,7 +3,7 @@ import LeftContainer from "./components/LeftContainer";
 import { GoogleLogin } from "react-google-login";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-
+import Checkbox from "@nextui-org/react/checkbox";
 import styles from "./Login.module.css";
 import { gmailLogin, login } from "../../services/auth_services";
 import toast from "react-hot-toast";
@@ -73,7 +73,7 @@ const Login = () => {
             />
             <div className={styles.showPassMainWrapper}>
               <div className={styles.showPassWrapper}>
-                <input
+                <Checkbox
                   value={showPass}
                   checked={showPass}
                   type="checkbox"

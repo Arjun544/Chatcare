@@ -116,6 +116,7 @@ h2 {
 
 .showPassWrapper {
   display: flex;
+  height: 20px;
   gap: 5px;
 }
 

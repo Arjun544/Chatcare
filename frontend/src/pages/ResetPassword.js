@@ -5,6 +5,7 @@ import ReactPinField from "react-pin-field";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RotateSpinner } from "react-spinners-kit";
 import Logo from "../components/Logo";
+import Checkbox from "@nextui-org/react/checkbox";
 import { forgetPassword, resetPassword } from "../services/auth_services";
 
 import styles from "./Verification/Verification.module.css";
@@ -67,7 +68,13 @@ const ResetPassword = () => {
     <div className={styles.mainWrapper}>
       <div className={styles.logoWrapper}>
         <Logo />
-        <h1>ChatCare</h1>
+        <h3
+          style={{
+            letterSpacing: "0.5px",
+          }}
+        >
+          ChatCare
+        </h3>
       </div>
 
       <form
@@ -111,7 +118,7 @@ const ResetPassword = () => {
           />
 
           <div className={styles.showPassWrapper}>
-            <input
+            <Checkbox
               value={showPass}
               checked={showPass}
               type="checkbox"

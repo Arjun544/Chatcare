@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { RotateSpinner } from "react-spinners-kit";
 import { gmailSignup, register } from "../../services/auth_services";
+import Checkbox from "@nextui-org/react/checkbox";
 
 import styles from "./Register.module.css";
 import { useDispatch } from "react-redux";
@@ -103,7 +104,7 @@ const Login = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <div className={styles.showPassWrapper}>
-              <input
+              <Checkbox
                 value={showPass}
                 checked={showPass}
                 type="checkbox"
