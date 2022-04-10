@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { HiMail } from "react-icons/hi";
 import { GoVerified } from "react-icons/go";
 import ReactPinField from "react-pin-field";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RotateSpinner } from "react-spinners-kit";
+import Logo from "../../components/Logo";
 import { setAuth } from "../../redux/reducers/authSlice";
 import { activate, resendCode } from "../../services/auth_services";
 
@@ -64,36 +66,56 @@ const Verification = () => {
 
   return (
     <div className={styles.mainWrapper}>
-      <div className={styles.verificationWrapper}>
-        <div className={styles.emailWrapper}>
-          <GoVerified fontSize={40} color={"#3fdd00"} />
-          <h4>We sent you code on {user?.email}</h4>
-        </div>
-        <ReactPinField
-          className={styles.pinField}
-          length={6}
-          autocapitalize="off"
-          autocorrect="off"
-          autocomplete="off"
-          inputmode="number"
-          validate="0123456789"
-          onComplete={(detail) => setCode(detail)}
-        />
-        {isLoading ? (
-          <RotateSpinner sty size={30} color="#44C7F4" loading={isLoading} />
-        ) : (
-          <div className={styles.buttonsWrapper}>
-            <span onClick={(e) => handleResendCode(e)}>Resend Code</span>
-            <button
-              disabled={code < 6 ? true : false}
-              onClick={(e) => handleVerifyCode(e)}
-              className={styles.verifyBtn}
-            >
-              Verify
-            </button>
-          </div>
-        )}
+      <div className={styles.logoWrapper}>
+        <Logo />
+        <h1>ChatCare</h1>
       </div>
+
+      {!user.active === true ? (
+        <div className={styles.verificationWrapper}>
+          <div className={styles.emailWrapper}>
+            <GoVerified fontSize={40} color={"#3fdd00"} />
+            <h4>You're already verified using {user?.email}</h4>
+          </div>
+          <button
+            onClick={(e) => navigate("/", { replace: true })}
+            className={styles.verifyBtn}
+          >
+            Back Home
+          </button>
+        </div>
+      ) : (
+        <div className={styles.verificationWrapper}>
+          <div className={styles.emailWrapper}>
+            <HiMail fontSize={40} color={"#3fdd00"} />
+            <h4>We sent you code on {user?.email}</h4>
+          </div>
+          <ReactPinField
+            className={styles.pinField}
+            length={6}
+            autocapitalize="off"
+            autocorrect="off"
+            autocomplete="off"
+            inputmode="number"
+            validate="0123456789"
+            onComplete={(detail) => setCode(detail)}
+          />
+          {isLoading ? (
+            <RotateSpinner sty size={30} color="#44C7F4" loading={isLoading} />
+          ) : (
+            <div className={styles.buttonsWrapper}>
+              <span onClick={(e) => handleResendCode(e)}>Resend Code</span>
+              <button
+                disabled={code < 6 ? true : false}
+                onClick={(e) => handleVerifyCode(e)}
+                className={styles.verifyBtn}
+              >
+                Verify
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

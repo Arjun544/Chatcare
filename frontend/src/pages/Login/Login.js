@@ -81,7 +81,9 @@ const Login = () => {
                 />
                 <h4>Show Password </h4>
               </div>
-              <h4>Foget Password?</h4>
+              <h4 onClick={(e) => navigate("/forgetPassword")}>
+                Forget Password?
+              </h4>
             </div>
           </div>
           {isLoading ? (

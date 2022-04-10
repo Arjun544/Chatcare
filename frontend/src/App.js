@@ -11,6 +11,8 @@ import { useRefreshHook } from "./helpers/useRefreshHook";
 const Login = lazy(() => import("./pages/Login/Login"));
 const Register = lazy(() => import("./pages/Register/Register"));
 const Verification = lazy(() => import("./pages/Verification/Verification"));
+const ForgetPassword = lazy(() => import("./pages/ForgetPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 function App() {
   const socketUrl = "http://localhost:5000";
@@ -67,6 +69,22 @@ function App() {
           element={
             <Suspense fallback={<WidgetLoader />}>
               <Verification />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/forgetPassword"
+          element={
+            <Suspense fallback={<WidgetLoader />}>
+              <ForgetPassword />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/resetPassword"
+          element={
+            <Suspense fallback={<WidgetLoader />}>
+              <ResetPassword />
             </Suspense>
           }
         />

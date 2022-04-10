@@ -39,6 +39,24 @@ export const login = async (email, password) =>
     password,
   });
 
+export const forgetPassword = async (email) =>
+  await api.post("/auth/forgetPassword", {
+    email,
+  });
+
+export const resetPassword = async (
+  email,
+  code,
+  newPassword,
+  confirmPassword
+) =>
+  await api.post("/auth/reset", {
+    email,
+    code,
+    newPassword,
+    confirmPassword,
+  });
+
 export const gmailSignup = async (username, email, profile) =>
   await api.post("/auth/gmailSignup", {
     username,

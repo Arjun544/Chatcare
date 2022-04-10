@@ -290,8 +290,8 @@ exports.forgotPassword = async (req, res) => {
     });
     if (!user) {
       return res.json({
-        success: true,
-        message: "User not found",
+        success: false,
+        message: "User not found with this email",
       });
     }
 
@@ -299,8 +299,8 @@ exports.forgotPassword = async (req, res) => {
     let response = await sendEmail(user.email, code, (isForgetPassword = true));
 
     if (response.error) {
-      return res.status(500).json({
-        error: true,
+      return res.json({
+        success: false,
         message: "Couldn't send mail. Please try again later.",
       });
     }
@@ -313,7 +313,7 @@ exports.forgotPassword = async (req, res) => {
       },
       data: {
         resetPasswordToken: code,
-        resetPasswordExpires: expiry,
+        resetPasswordExpires: new Date(expiry),
       },
     });
 
@@ -402,13 +402,13 @@ exports.resetPassword = async (req, res) => {
 
     if (user.length === 0) {
       return res.json({
-        error: true,
-        message: "Password reset token is invalid or has expired.",
+        success: false,
+        message: "Code is invalid or has expired.",
       });
     }
     if (newPassword !== confirmPassword) {
-      return res.status(400).json({
-        error: true,
+      return res.json({
+        success: false,
         message: "Passwords didn't match",
       });
     }
