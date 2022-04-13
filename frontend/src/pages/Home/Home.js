@@ -4,6 +4,7 @@ import { logout } from "../../services/auth_services";
 import { setAuth } from "../../redux/reducers/authSlice";
 
 import styles from "./Home.module.css";
+import Conversations from "./Conversations";
 
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
@@ -17,7 +18,8 @@ const Home = () => {
 
   return (
     <div className={styles.mainWrapper}>
-      <div className="flex"></div>
+      {/* Conversations */}
+      <Conversations/>
     </div>
   );
 };

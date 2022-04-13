@@ -1,5 +1,54 @@
-.mainWrapper{
-    width: 100%;
-    height: 100vh;
-    background-color: #FF7D7D;
+.mainWrapper {
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+.conversationWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  height: 100vh;
+  background-color: #a17b7b;
+}
+
+.stories {
+  display: flex;
+  flex-direction: row;
+  height: 10%;
+  width: 100%;
+}
+
+.collapsedStories {
+  display: flex;
+  flex-direction: row;
+  width: 20%;
+  background-color: #f1f1f1;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.openedStories {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  background-color: #f1f1f1;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.storyItem {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: #FF0000;
+  margin-right: 10px;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  height: 90%;
+  width: 100%;
+  background-color: #0f0f0f;
 }

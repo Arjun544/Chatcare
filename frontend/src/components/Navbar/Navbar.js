@@ -11,7 +11,7 @@ const Navbar = () => {
   return (
     <div className={styles.navContainer}>
       <div className={styles.logoWrapper}>
-        <Logo height="45" width="45" />
+        <Logo height="40" width="40" />
       </div>
       <div
         style={{
@@ -19,33 +19,33 @@ const Navbar = () => {
         }}
       >
         {navItems.map((item, index) => (
-          <div
-            key={index}
+          <Tooltip
             style={{
               width: "100%",
-              marginBottom: "20px",
+              marginBottom: "10px",
+              padding: "0px 10px",
             }}
+            content={item.name}
+            color="invert"
+            placement="right"
           >
-            <NavLink
-              to={item.path}
-              className={({ isActive }) =>
-                isActive ? styles.activeStyle : styles.isNotActiveStyle
-              }
-            >
-              <Tooltip
-                content={item.name}
-                color="invert"
-                placement="right"
+            <div key={index}>
+              <NavLink
+                to={item.path}
+                className={({ isActive }) =>
+                  isActive ? styles.activeStyle : styles.isNotActiveStyle
+                }
               >
-
-              {item.icon}
-              </Tooltip>
-            </NavLink>
-          </div>
+                {item.icon}
+              </NavLink>
+            </div>
+          </Tooltip>
         ))}
       </div>
       <div className={styles.premiumWrapper}>
-        <RiShieldStarFill fontSize={30} />
+        <Tooltip content="premium" color="invert" placement="rightStart">
+          <RiShieldStarFill fontSize={30} />
+        </Tooltip>
       </div>
     </div>
   );

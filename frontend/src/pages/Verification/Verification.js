@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { HiMail } from "react-icons/hi";
-import { GoVerified } from "react-icons/go";
 import ReactPinField from "react-pin-field";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +9,7 @@ import Logo from "../../components/Logo";
 import { setAuth } from "../../redux/reducers/authSlice";
 import { activate, resendCode } from "../../services/auth_services";
 
-import styles from "./Verification.module.css";
+import styles from "../PinField.module.css";
 
 const Verification = () => {
   const navigate = useNavigate();
@@ -65,36 +64,29 @@ const Verification = () => {
   };
 
   return (
-    <div className={styles.mainWrapper}>
-      <div className={styles.logoWrapper}>
+    <div className="w-screen h-screen bg-white flex flex-col items-center justify-evenly">
+      <div className="flex flex-col h-fit items-center gap-1 bg-white">
         <Logo />
-        <h3
-          style={{
-            letterSpacing: "0.5px",
-          }}
-        >
+        <h1 className="text-black font-semibold tracking-wider text-lg">
           ChatCare
-        </h3>
+        </h1>
       </div>
-
-      {!user.active === true ? (
-        <div className={styles.verificationWrapper}>
-          <div className={styles.emailWrapper}>
-            <GoVerified fontSize={40} color={"#3fdd00"} />
-            <h4>You're already verified using {user?.email}</h4>
+      {user.active === true ? (
+        <div className="bg-white w-5/6 md:w-1/2 h-1/2 flex flex-col items-center justify-around border-0 rounded-2xl shadow-md">
+          <div className="flex flex-col items-center gap-4 px-5">
+            <HiMail fontSize={40} color={"#3fdd00"} />
+            <h5 className="text-slate-400 tracking-wider text-sm">
+              Your account is verified using {user?.email}
+            </h5>
           </div>
-          <button
-            onClick={(e) => navigate("/", { replace: true })}
-            className={styles.verifyBtn}
-          >
-            Back Home
-          </button>
         </div>
       ) : (
-        <div className={styles.verificationWrapper}>
-          <div className={styles.emailWrapper}>
+        <div className="bg-white w-5/6 md:w-1/2 h-1/2 flex flex-col items-center justify-around border-0 rounded-2xl shadow-md">
+          <div className="flex flex-col items-center gap-4 px-5">
             <HiMail fontSize={40} color={"#3fdd00"} />
-            <h4>We sent you code on {user?.email}</h4>
+            <h5 className="text-slate-400 tracking-wider text-sm">
+              We sent you code on {user?.email}
+            </h5>
           </div>
           <ReactPinField
             className={styles.pinField}
@@ -109,12 +101,17 @@ const Verification = () => {
           {isLoading ? (
             <RotateSpinner sty size={30} color="#44C7F4" loading={isLoading} />
           ) : (
-            <div className={styles.buttonsWrapper}>
-              <span onClick={(e) => handleResendCode(e)}>Resend Code</span>
+            <div className="flex flex-col gap-2 w-full items-center">
+              <span
+                className="text-green-400 text-sm tracking-wider font-semibold cursor-pointer hover:text-green-500"
+                onClick={(e) => handleResendCode(e)}
+              >
+                Resend Code
+              </span>
               <button
                 disabled={code < 6 ? true : false}
                 onClick={(e) => handleVerifyCode(e)}
-                className={styles.verifyBtn}
+                className="bg-customOrange w-1/2 md:w-1/5 shadow-md h-14 rounded-xl cursor-pointer text-white tracking-wider font-semibold disabled:bg-slate-300 disabled:cursor-not-allowed hover:scale-95 transition-all duration-700 ease-in-out"
               >
                 Verify
               </button>

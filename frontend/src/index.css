@@ -1,11 +1,7 @@
-:root {
-  --customSky: #44C7F4;
-  --customOrange: #EC5424;
-  --customBlack: #16214D;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-* {
-    padding: 0;
-    margin: 0;
-    font-family: 'Roboto Serif', serif;
+html {
+  @apply font-serif
 }
