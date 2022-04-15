@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../components/Navbar";
 import WidgetLoader from "../components/WidgetLoader";
 // import NotFound from "./NotFound";
 

@@ -6,7 +6,9 @@ const LeftContainer = () => {
   return (
     <div className="flex-col w-1/3 items-center justify-around bg-slate-200 hidden md:flex">
       <div className="flex items-center gap-4">
-        <Logo />
+        <div className="hover:animate-spin">
+          <Logo />
+        </div>
         <h1 className="text-black font-semibold tracking-wider text-lg">
           ChatCare
         </h1>

@@ -12,6 +12,10 @@ module.exports = {
       fontFamily: {
         sans: ["Lato", ...defaultTheme.fontFamily.sans],
       },
+      transitionProperty: {
+        width: "width",
+        height: "height",
+      },
     },
   },
   plugins: [],
