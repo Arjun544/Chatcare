@@ -70,7 +70,7 @@ const Conversations = ({
                   <div
                     key={index}
                     onClick={(e) => setCurrentConversation(index)}
-                    className="flex w-full mb-2 h-20 items-center justify-between cursor-pointer px-4 hover:bg-slate-50 rounded-2xl"
+                    className="flex w-full h-20 items-center justify-between cursor-pointer px-4 hover:bg-slate-50 rounded-2xl"
                   >
                     <div className="flex items-center gap-4">
                       <img

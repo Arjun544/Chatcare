@@ -39,7 +39,7 @@ const ConversationDetails = ({ conversation, setConversations }) => {
     <div className="flex flex-col flex-grow bg-white shadow-sm overflow-hidden">
       <div className="flex bg-slate-50 w-full h-20 justify-between items-center px-8">
         <div className="flex items-center">
-          <User src={profileHolder} zoomed bordered />
+          <User src={profileHolder} zoomed="true" bordered />
           <div className="flex flex-col">
             <h1 className="font-semibold text-black tracking-wider">
               {conversation.name}

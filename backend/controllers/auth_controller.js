@@ -86,6 +86,9 @@ exports.register = async (req, res) => {
         profileId: "",
         location: "",
       },
+      include: {
+        friends: true,
+      },
     });
     // Generate token
     const { accessToken, refreshToken } = generateTokens({
@@ -114,6 +117,7 @@ exports.register = async (req, res) => {
         active: newUser.active,
         profile: newUser.profile,
         location: newUser.location,
+        friends: newUser.friends,
       },
       isAuth: true,
     });
@@ -167,6 +171,9 @@ exports.activate = async (req, res) => {
           emailTokenExpires: undefined,
           active: true,
         },
+        include: {
+          friends: true,
+        },
       });
 
       return res.json({
@@ -178,6 +185,7 @@ exports.activate = async (req, res) => {
           active: newUser.active,
           profile: newUser.profile,
           location: newUser.location,
+          friends: newUser.friends,
         },
         isAuth: true,
       });
@@ -215,6 +223,7 @@ exports.login = async (req, res) => {
         profile: true,
         location: true,
         tokens: true,
+        friends: true,
       },
     });
     if (!user) {
@@ -260,6 +269,7 @@ exports.login = async (req, res) => {
         profile: user.profile,
         active: user.active,
         location: user.location,
+        friends: user.friends,
       },
       isAuth: true,
     });
@@ -360,6 +370,9 @@ exports.sendCode = async (req, res) => {
         emailToken: code,
         emailTokenExpires: new Date(expiry),
       },
+      include: {
+        friends: true,
+      },
     });
     return res.json({
       success: true,
@@ -370,6 +383,7 @@ exports.sendCode = async (req, res) => {
         active: user.active,
         profile: user.profile,
         location: user.location,
+        friends: user.friends,
       },
       isAuth: true,
     });
@@ -461,6 +475,9 @@ exports.refresh = async (req, res) => {
     where: {
       id: userData.id,
     },
+    include: {
+      friends: true,
+    },
   });
   if (!user) {
     return res.status(404).json({ message: "No user" });
@@ -496,6 +513,7 @@ exports.refresh = async (req, res) => {
       active: user.active,
       profile: user.profile,
       location: user.location,
+      friends: user.friends,
     },
     isAuth: true,
   });
