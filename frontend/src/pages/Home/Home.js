@@ -17,6 +17,36 @@ const stories = [
   {
     name: "Arjun",
   },
+  {
+    name: "Arjun",
+  },
+  {
+    name: "Arjun",
+  },
+  {
+    name: "Arjun",
+  },
+  {
+    name: "Arjun",
+  },
+  {
+    name: "Arjun",
+  },
+  {
+    name: "Arjun",
+  },
+  {
+    name: "Arjun",
+  },
+  {
+    name: "Arjun",
+  },
+  {
+    name: "Arjun",
+  },
+  {
+    name: "Arjun",
+  },
 ];
 
 const data = [

@@ -28,10 +28,13 @@ model User {
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @default(now())
   userId               Int?
+  requests             User[]         @relation("requests")
+  requestsRelation     User[]         @relation("requests")
   friends              User[]         @relation("friends")
   friendsRelation      User[]         @relation("friends")
   recevied             Message[]      @relation(name: "Recevied")
   sent                 Message[]      @relation(name: "Sent")
+  msgRequests          MsgRequest[]
 }
 
 model Token {
@@ -63,4 +66,13 @@ model Message {
   receiverId     Int
   sender         User          @relation("Sent", fields: [senderId], references: [id])
   senderId       Int
+}
+
+model MsgRequest {
+  id        Int      @id @default(autoincrement())
+  msg       String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }

@@ -4,6 +4,7 @@ import { RiSearch2Fill } from "react-icons/ri";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { MdDone, MdDoneAll } from "react-icons/md";
 import profileHolder from "../../../assets/profile_placeholder.png";
+import StoryTile from "./StoryTile";
 
 const Conversations = ({
   stories,
@@ -12,6 +13,7 @@ const Conversations = ({
   isStoriesOpened,
   setIsStoriesOpened,
 }) => {
+  const [isShowingOnline, setIsShowingOnline] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
@@ -27,6 +29,45 @@ const Conversations = ({
             fontSize={25}
             className="-rotate-90 cursor-pointer"
           />
+        )}
+      </div>
+      {/* Online */}
+      <div
+        className={`flex flex-col w-full items-start bg-white transition-all duration-500 ease-in-out ${
+          isShowingOnline ? "h-52" : "h-32"
+        }`}
+      >
+        <div className="flex flex-row w-full items-center justify-between bg-white px-3">
+          <h5 className="font-semibold tracking-wider text-black">
+            Online ({stories.length})
+          </h5>
+          {stories.length > 1 && (
+            <TiArrowSortedDown
+              onClick={(e) => setIsShowingOnline(!isShowingOnline)}
+              fontSize={25}
+              className={`cursor-pointer transition-all duration-700 ease-in-out ${
+                isShowingOnline ? "-rotate-180" : "rotate-0"
+              }`}
+            />
+          )}
+        </div>
+        {stories.length > 1 && (
+          <div
+            className={`grid grid-cols-5 gap-4 my-4 transition-all duration-700 ease-in-out px-3 ${
+              isShowingOnline ? "overflow-y-scroll" : "overflow-hidden"
+            }`}
+          >
+            {stories.map((story, index) => (
+              <div className="flex relative h-14">
+                <img
+                  src={profileHolder}
+                  alt="user profile"
+                  className="object-contain h-14 py-2 px-4  bg-slate-200 rounded-full"
+                />
+                <div className="absolute flex bottom-0 right-2 h-3 w-3 rounded-full bg-red-400"></div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
       <div className="flex flex-col flex-grow">

@@ -1,6 +1,7 @@
-import { RiChatSmile3Fill, RiSearch2Fill, RiCompassFill } from "react-icons/ri";
+import { RiChatSmile3Fill, RiSearch2Fill } from "react-icons/ri";
 import { FaUserFriends } from "react-icons/fa";
 import { SiWechat } from "react-icons/si";
+import { MdPersonAddAlt1 } from "react-icons/md";
 
 export const navItems = [
   {
@@ -9,14 +10,14 @@ export const navItems = [
     icon: <RiChatSmile3Fill fontSize={23} />,
   },
   {
-    name: "Discover",
-    path: "/discover",
-    icon: <RiCompassFill fontSize={23} />,
-  },
-  {
     name: "Search",
     path: "/search",
     icon: <RiSearch2Fill fontSize={23} />,
+  },
+  {
+    name: "Friends",
+    path: "/friends",
+    icon: <FaUserFriends fontSize={23} />,
   },
   {
     name: "Groups",
@@ -24,9 +25,9 @@ export const navItems = [
     icon: <SiWechat fontSize={25} />,
   },
   {
-    name: "Friends",
-    path: "/friends",
-    icon: <FaUserFriends fontSize={23} />,
+    name: "Requests",
+    path: "/requests",
+    icon: <MdPersonAddAlt1 fontSize={25} />,
   },
   {
     name: "Your Profile",

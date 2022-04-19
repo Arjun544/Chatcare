@@ -42,7 +42,7 @@ const Navbar = () => {
           </Tooltip>
         ))}
       </div>
-      <Tooltip content="premium" color="invert" placement="rightStart">
+      <Tooltip content="Premium" color="invert" placement="rightStart">
         <RiShieldStarFill fontSize={30} className="fill-customOrange" />
       </Tooltip>
     </div>

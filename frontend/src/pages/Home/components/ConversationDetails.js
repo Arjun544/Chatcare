@@ -16,7 +16,7 @@ import MessageTile from "./MessageTile";
 
 const ConversationDetails = ({ conversation, setConversations }) => {
   const scrollRef = useRef(null);
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [isOnline, setIsOnline] = useState(true);
   const [isTyping, setIsTyping] = useState(true);
 
@@ -28,12 +28,12 @@ const ConversationDetails = ({ conversation, setConversations }) => {
 
   useLayoutEffect(() => {
     scrollToBottom();
-  }, []);
+  }, [conversation]);
 
   const handleSendMessage = (e) => {
-     e.preventDefault();
-     scrollToBottom();
-   };
+    e.preventDefault();
+    scrollToBottom();
+  };
 
   return (
     <div className="flex flex-col flex-grow bg-white shadow-sm overflow-hidden">

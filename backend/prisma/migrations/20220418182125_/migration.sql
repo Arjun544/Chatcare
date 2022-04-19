@@ -54,6 +54,23 @@ CREATE TABLE "Message" (
 );
 
 -- CreateTable
+CREATE TABLE "MsgRequest" (
+    "id" SERIAL NOT NULL,
+    "msg" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "MsgRequest_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "_requests" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "_friends" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
@@ -67,6 +84,12 @@ CREATE UNIQUE INDEX "Token_token_key" ON "Token"("token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Conversation_userId_key" ON "Conversation"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_requests_AB_unique" ON "_requests"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_requests_B_index" ON "_requests"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_friends_AB_unique" ON "_friends"("A", "B");
@@ -88,6 +111,15 @@ ALTER TABLE "Message" ADD CONSTRAINT "Message_senderId_fkey" FOREIGN KEY ("sende
 
 -- AddForeignKey
 ALTER TABLE "Message" ADD CONSTRAINT "Message_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES "Conversation"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MsgRequest" ADD CONSTRAINT "MsgRequest_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_requests" ADD FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_requests" ADD FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_friends" ADD FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

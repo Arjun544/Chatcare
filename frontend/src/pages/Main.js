@@ -5,7 +5,8 @@ import WidgetLoader from "../components/WidgetLoader";
 // import NotFound from "./NotFound";
 
 const Home = lazy(() => import("./Home/Home"));
-const Discover = lazy(() => import("./Discover/Discover"));
+const Friends = lazy(() => import("./Friends/Friends"));
+const Requests = lazy(() => import("./Requests"));
 
 const Main = () => {
   //   useDarkMode();
@@ -27,10 +28,18 @@ const Main = () => {
           }
         />
         <Route
-          path="/discover"
+          path="/friends"
           element={
             <Suspense fallback={<WidgetLoader />}>
-              <Discover />
+              <Friends />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/requests"
+          element={
+            <Suspense fallback={<WidgetLoader />}>
+              <Requests />
             </Suspense>
           }
         />
