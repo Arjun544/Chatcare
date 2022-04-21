@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 
 const authRoutes = require("./routes/auth_routes");
 const userRoutes = require("./routes/user_routes");
+const conversationRoutes = require("./routes/conversation_routes");
 
 // Sooket Connection
 const io = require("socket.io")(server, {
@@ -41,6 +42,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth/", authRoutes);
 app.use("/api/user/", userRoutes);
+app.use("/api/conversation/", conversationRoutes);
 
 server.listen(5000, () => {
   console.log("Server started on port 5000");

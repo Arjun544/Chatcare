@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../services/auth_services";
 import { setAuth } from "../../redux/reducers/authSlice";
@@ -6,6 +6,9 @@ import Conversations from "./components/Conversations";
 import StoryTile from "./components/StoryTile";
 import ConversationDetails from "./components/ConversationDetails";
 import ConversationAttachments from "./components/ConversationAttachments";
+import { getConversations } from "../../services/conversation_services";
+import { useQuery } from "react-query";
+import { AppContext } from "../Main";
 
 const stories = [
   {
@@ -203,10 +206,30 @@ const data = [
 
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
-  const [conversations, setConversations] = useState(data);
+  const { currentConversation, setCurrentConversation } = useContext(AppContext);
   const [isStoriesOpened, setIsStoriesOpened] = useState(false);
-  const [currentConversation, setCurrentConversation] = useState(0);
+  
   const dispatch = useDispatch();
+
+  const {
+    isLoading: isConversationsLoading,
+    data: conversations,
+    refetch: conversationsRefetch,
+    isError: isConversationsError,
+  } = useQuery(
+    ["conversations"],
+    async () => {
+      const response = await getConversations(user.id);
+      console.log(response.data.conversations);
+      return response.data.conversations;
+    },
+    {
+      keepPreviousData: true,
+      retryOnMount: false,
+      refetchOnMount: true,
+      refetchOnWindowFocus: false,
+    }
+  );
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -219,6 +242,7 @@ const Home = () => {
       <div className="flex h-full">
         {/* Conversations */}
         <Conversations
+          isConversationsLoading={isConversationsLoading}
           stories={stories}
           conversations={conversations}
           setCurrentConversation={setCurrentConversation}
@@ -227,20 +251,17 @@ const Home = () => {
         />
         <div className="flex flex-col flex-grow">
           {/* Stories */}
-          {isStoriesOpened && stories.length > 1 && (
+          {/* {isStoriesOpened && stories.length > 1 && (
             <div className="flex h-20 items-center px-6 transition-all duration-700 ease-in-out">
               {stories.map((story, index) => (
                 <StoryTile key={index} story={story} />
               ))}
             </div>
-          )}
+          )} */}
           {/* Conversation Details */}
-          <ConversationDetails
-            conversation={conversations[currentConversation]}
-            setConversations={setConversations}
-          />
+          <ConversationDetails conversation={currentConversation} />
         </div>
-        <ConversationAttachments />
+        {/* <ConversationAttachments /> */}
       </div>
     </div>
   );

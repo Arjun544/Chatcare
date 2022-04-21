@@ -10,6 +10,7 @@ import UserTile from "../../components/UserTile";
 
 const Friends = () => {
   const { user } = useSelector((state) => state.auth);
+  
   const {
     isLoading: friendsLoading,
     data: friends,

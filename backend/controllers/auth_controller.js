@@ -1,5 +1,4 @@
 const prisma = require("../config/prisma");
-const moment = require("moment");
 const { sendEmail } = require("../helpers/mailer");
 const {
   storeRefreshToken,
@@ -580,11 +579,11 @@ exports.gmailLogin = async (req, res) => {
 
     // Generate token
     const { accessToken, refreshToken } = generateTokens({
-      id: newUser.id,
+      id: user.id,
       isActivited: false,
     });
     // Store refresh token
-    await storeRefreshToken(refreshToken, newUser.id);
+    await storeRefreshToken(refreshToken, user.id);
     // Set cookie
     res.cookie("refreshToken", refreshToken, {
       maxAge: 1000 * 60 * 60 * 24 * 30,

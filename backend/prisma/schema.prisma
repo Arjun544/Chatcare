@@ -24,7 +24,8 @@ model User {
   emailTokenExpires    DateTime
   resetPasswordToken   Int
   resetPasswordExpires DateTime
-  conversations        Conversation[]
+  conversations        Conversation[] @relation(name: "by")
+  conversationsTo      Conversation[] @relation(name: "to")
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @default(now())
   userId               Int?
@@ -48,8 +49,10 @@ model Token {
 
 model Conversation {
   id        Int       @id @default(autoincrement())
-  user      User      @relation(fields: [userId], references: [id])
-  userId    Int       @unique
+  by        User      @relation("by", fields: [byId], references: [id])
+  byId      Int       @unique
+  to        User      @relation("to", fields: [toId], references: [id])
+  toId      Int       @unique
   messages  Message[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
@@ -57,15 +60,16 @@ model Conversation {
 
 model Message {
   id             Int           @id @default(autoincrement())
-  content        String
+  text           String
+  image          String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @default(now())
-  Conversation   Conversation? @relation(fields: [conversationId], references: [id])
-  conversationId Int?
   receiver       User          @relation("Recevied", fields: [receiverId], references: [id])
   receiverId     Int
   sender         User          @relation("Sent", fields: [senderId], references: [id])
   senderId       Int
+  conversation   Conversation? @relation(fields: [conversationId], references: [id])
+  conversationId Int?
 }
 
 model MsgRequest {

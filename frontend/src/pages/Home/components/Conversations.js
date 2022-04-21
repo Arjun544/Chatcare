@@ -1,12 +1,15 @@
 import React, { useState } from "react";
+import Moment from "react-moment";
 import Collapse from "@nextui-org/react/collapse";
 import { RiSearch2Fill } from "react-icons/ri";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { MdDone, MdDoneAll } from "react-icons/md";
 import profileHolder from "../../../assets/profile_placeholder.png";
 import StoryTile from "./StoryTile";
+import ConversationLoader from "../../../loaders/ConversationLoader";
 
 const Conversations = ({
+  isConversationsLoading,
   stories,
   conversations,
   setCurrentConversation,
@@ -17,7 +20,7 @@ const Conversations = ({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
-    <div className="flex flex-col w-1/5 h-full bg-white shadow-md">
+    <div className="flex flex-col w-1/5 h-full bg-white shadow-sm">
       {/* Stories */}
       <div className="flex flex-row h-20 w-full items-center justify-between bg-white px-3">
         <h5 className="font-semibold tracking-wider text-black">
@@ -62,7 +65,7 @@ const Conversations = ({
                 <img
                   src={profileHolder}
                   alt="user profile"
-                  className="object-contain h-14 py-2 px-4  bg-slate-200 rounded-full"
+                  className="object-contain h-14 py-2 px-4  bg-gray-200 rounded-full"
                 />
                 <div className="absolute flex bottom-0 right-2 h-3 w-3 rounded-full bg-red-400"></div>
               </div>
@@ -96,22 +99,28 @@ const Conversations = ({
             </div>
           )}
           {/* Messages */}
-          <div className="flex flex-col flex-grow ">
-            <Collapse.Group divider={false}>
-              <Collapse
-                title={
-                  <h1 className="text-slate-400 tracking-wider text-sm">
-                    Recent Chats
-                  </h1>
-                }
-                expanded
-                showArrow={false}
-              >
-                {conversations.map((conversation, index) => (
+          <Collapse.Group divider={false}>
+            <Collapse
+              title={
+                <h1 className="text-slate-400 tracking-wider text-sm">
+                  Recent Chats
+                </h1>
+              }
+              expanded={true}
+              showArrow={false}
+            >
+              {isConversationsLoading ? (
+                <ConversationLoader />
+              ) : !conversations || conversations === undefined ? (
+                <p className="text-slate-400 text-center tracking-wider font-semibold">
+                  No chats yet
+                </p>
+              ) : (
+                conversations.map((conversation, index) => (
                   <div
                     key={index}
-                    onClick={(e) => setCurrentConversation(index)}
-                    className="flex w-full h-20 items-center justify-between cursor-pointer px-4 hover:bg-slate-50 rounded-2xl"
+                    onClick={(e) => setCurrentConversation(conversation)}
+                    className="flex w-full h-20 items-center justify-between cursor-pointer px-4 hover:bg-gray-200 rounded-2xl"
                   >
                     <div className="flex items-center gap-4">
                       <img
@@ -121,39 +130,39 @@ const Conversations = ({
                       />
                       <div className="flex flex-col">
                         <h1 className="font-semibold text-black tracking-wider">
-                          {conversation.name}
+                          {conversation.to.username}
                         </h1>
                         <div className="flex items-center gap-2">
                           {conversation.isRead ? <MdDoneAll /> : <MdDone />}
                           <p className="text-black tracking-wider text-sm">
-                            {conversation.message}
+                            {conversation.messages[0].text}
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="flex flex-col gap-2 items-center">
                       <h1 className="text-slate-300 text-xs tracking-wider font-semibold">
-                        {conversation.time}
+                        <Moment fromNow>{conversation.createdAt}</Moment>
                       </h1>
                       <h1 className="text-xs tracking-wider font-semibold bg-green-400 text-black py-1 px-2 rounded-full">
                         2
                       </h1>
                     </div>
                   </div>
-                ))}
-              </Collapse>
-              <Collapse
-                title={
-                  <h1 className="text-slate-400 tracking-wider text-sm">
-                    Group Chats
-                  </h1>
-                }
-                showArrow={false}
-              >
-                <span>test</span>
-              </Collapse>
-            </Collapse.Group>
-          </div>
+                ))
+              )}
+            </Collapse>
+            <Collapse
+              title={
+                <h1 className="text-slate-400 tracking-wider text-sm">
+                  Group Chats
+                </h1>
+              }
+              showArrow={false}
+            >
+              <span>test</span>
+            </Collapse>
+          </Collapse.Group>
         </div>
       </div>
     </div>

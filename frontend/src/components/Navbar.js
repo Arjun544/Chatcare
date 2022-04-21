@@ -13,7 +13,7 @@ const isNotActiveStyle =
 
 const Navbar = () => {
   return (
-    <div className="flex flex-col h-screen w-20 bg-slate-200 items-center justify-between py-5">
+    <div className="flex flex-col h-screen w-20 bg-gray-200 items-center justify-between py-5">
       <div className="cursor-pointer hover:animate-spin">
         <Logo height="40" width="40" />
       </div>
