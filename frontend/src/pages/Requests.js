@@ -1,11 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useQuery } from "react-query";
-import { getAllUsers, getUserRequests } from "../services/user_services";
+import { getUserRequests } from "../services/user_services";
 import UserTile from "../components/UserTile";
-import profileHolder from "../assets/profile_placeholder.png";
-import { Tooltip } from "@nextui-org/react";
-import { MdDelete, MdDone } from "react-icons/md";
 
 const Requests = () => {
   const { user } = useSelector((state) => state.auth);

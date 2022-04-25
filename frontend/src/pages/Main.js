@@ -1,7 +1,16 @@
-import { createContext, lazy, Suspense, useState } from "react";
+import {
+  createContext,
+  lazy,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { io } from "socket.io-client";
 import { Route, Routes } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import WidgetLoader from "../components/WidgetLoader";
+import { useSelector } from "react-redux";
 // import NotFound from "./NotFound";
 
 const Home = lazy(() => import("./Home/Home"));
@@ -11,12 +20,31 @@ const Requests = lazy(() => import("./Requests"));
 export const AppContext = createContext();
 
 const Main = () => {
+  const { user } = useSelector((state) => state.auth);
+  const socketUrl = "http://localhost:5000";
+  let socket = useRef(null);
   const [currentConversation, setCurrentConversation] = useState(null);
   //   useDarkMode();
 
+  useEffect(() => {
+    socket.current = io(socketUrl, {
+      transports: ["polling"],
+    });
+    socket.current.on("connection", () => {
+      console.log("connected to server");
+    });
+
+    socket.current.on("disconnect", () => {
+      console.log("Socket disconnecting");
+    });
+
+    socket.current.emit("addUser", user);
+
+  }, []);
+
   return (
     <AppContext.Provider
-      value={{ currentConversation, setCurrentConversation }}
+      value={{ socket, currentConversation, setCurrentConversation }}
     >
       <div className="flex">
         <Navbar />

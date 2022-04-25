@@ -48,7 +48,7 @@ const ConversationDetails = ({ conversation, setConversations }) => {
         </div>
       ) : (
         <div className="flex flex-col flex-grow bg-white shadow-sm overflow-hidden">
-          <div className="flex bg-slate-50 w-full h-20 justify-between items-center px-8">
+          <div className="flex bg-gray-200 w-full h-20 justify-between items-center px-8">
             <div className="flex items-center">
               <User src={profileHolder} zoomed="true" bordered />
               <div className="flex flex-col">
@@ -92,7 +92,7 @@ const ConversationDetails = ({ conversation, setConversations }) => {
           {/* Messages */}
           <div
             ref={scrollRef}
-            className="flex flex-col h-full w-full bg-slate-100 py-4 overflow-y-scroll"
+            className="flex flex-col h-full w-full bg-gray-100 py-4 overflow-y-scroll"
           >
             {conversation.messages < 1 ? (
               <div className="flex h-full w-full flex-col items-center justify-center">
@@ -122,7 +122,6 @@ const ConversationDetails = ({ conversation, setConversations }) => {
             )}
           </div>
           {/* Typing Input */}
-
           <div className="flex items-center w-full h-20 justify-between bg-white shadow-sm px-8">
             <RiAttachment2
               fontSize={35}

@@ -52,163 +52,10 @@ const stories = [
   },
 ];
 
-const data = [
-  {
-    id: 1,
-    name: "John Doe",
-    messages: [
-      {
-        id: 1,
-        text: "Hello",
-        isMine: true,
-        reactions: [
-          {
-            by: "Sara",
-            emoji: {
-              id: "kissing_heart",
-              name: "Face Throwing a Kiss",
-              short_names: ["kissing_heart"],
-              colons: ":kissing_heart:",
-              emoticons: [":*", ":-*"],
-              unified: "1f618",
-              skin: null,
-              native: "😘",
-            },
-          },
-        ],
-      },
-      {
-        id: 2,
-        text: "How are you?",
-        isMine: false,
-        reactions: [],
-      },
-      {
-        id: 3,
-        text: "I'm fine",
-        isMine: true,
-        reactions: [],
-      },
-      {
-        id: 4,
-        text: "Nice to meet you",
-        isMine: false,
-        reactions: [],
-      },
-      {
-        id: 5,
-        text: "How are you?",
-        isMine: true,
-        reactions: [],
-      },
-      {
-        id: 6,
-        text: "I'm fine",
-        isMine: false,
-        reactions: [],
-      },
-      {
-        id: 7,
-        text: "Nice to meet you",
-        isMine: true,
-        reactions: [],
-      },
-      {
-        id: 7,
-        text: "See you soon!",
-        isMine: true,
-        reactions: [],
-      },
-      {
-        id: 3,
-        text: "I'm fine",
-        isMine: true,
-        reactions: [],
-      },
-      {
-        id: 4,
-        text: "Nice to meet you",
-        isMine: false,
-        reactions: [],
-      },
-      {
-        id: 5,
-        text: "How are you?",
-        isMine: true,
-        reactions: [],
-      },
-      {
-        id: 6,
-        text: "I'm fine",
-        isMine: false,
-        reactions: [],
-      },
-      {
-        id: 7,
-        text: "Nice to meet you",
-        isMine: true,
-        reactions: [],
-      },
-      {
-        id: 7,
-        text: "See you soon!",
-        isMine: true,
-        reactions: [],
-      },
-      {
-        id: 3,
-        text: "I'm fine",
-        isMine: true,
-        reactions: [],
-      },
-      {
-        id: 4,
-        text: "Nice to meet you",
-        isMine: false,
-        reactions: [],
-      },
-      {
-        id: 5,
-        text: "How are you?",
-        isMine: true,
-        reactions: [],
-      },
-      {
-        id: 6,
-        text: "I'm fine",
-        isMine: false,
-        reactions: [],
-      },
-      {
-        id: 7,
-        text: "Nice to meet you Nice to meet you Nice to meet you Nice to meet you Nice to meet you Nice to meet you Nice to meet you Nice to meet you Nice to meet you Nice to meet you Nice to meet you ",
-        isMine: true,
-        reactions: [],
-      },
-      {
-        id: 7,
-        text: "See you soon!",
-        isMine: true,
-        reactions: [],
-      },
-    ],
-    time: "12:00",
-    isRead: false,
-  },
-  {
-    id: 2,
-    name: "Arjun",
-    messages: [],
-    time: "03:00",
-    isRead: true,
-  },
-];
-
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
   const { currentConversation, setCurrentConversation } = useContext(AppContext);
   const [isStoriesOpened, setIsStoriesOpened] = useState(false);
-  
   const dispatch = useDispatch();
 
   const {
@@ -220,7 +67,6 @@ const Home = () => {
     ["conversations"],
     async () => {
       const response = await getConversations(user.id);
-      console.log(response.data.conversations);
       return response.data.conversations;
     },
     {

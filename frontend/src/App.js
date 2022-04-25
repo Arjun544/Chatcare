@@ -1,6 +1,5 @@
-import { lazy, Suspense, useEffect, useRef } from "react";
+import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
-import { io } from "socket.io-client";
 import WidgetLoader from "./components/WidgetLoader";
 import Main from "./pages/Main";
 import { Toaster } from "react-hot-toast";
@@ -15,24 +14,8 @@ const ForgetPassword = lazy(() => import("./pages/ForgetPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 function App() {
-  const socketUrl = "http://localhost:5000";
-  let socket = useRef(null);
-
   // call refresh endpoint
   const { loading } = useRefreshHook();
-
-  useEffect(() => {
-    socket.current = io(socketUrl, {
-      transports: ["polling"],
-    });
-    socket.current.on("connection", () => {
-      console.log("connected to server");
-    });
-
-    socket.current.on("disconnect", () => {
-      console.log("Socket disconnecting");
-    });
-  }, []);
 
   if (loading) {
     return <WidgetLoader />;

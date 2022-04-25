@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/auth_routes");
 const userRoutes = require("./routes/user_routes");
 const conversationRoutes = require("./routes/conversation_routes");
+const { socketInit } = require("./socket");
 
 // Sooket Connection
 const io = require("socket.io")(server, {
@@ -18,12 +19,8 @@ const io = require("socket.io")(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  console.log("New client connected");
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-  });
-});
+// Socket Connection
+socketInit(io);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "50mb" }));

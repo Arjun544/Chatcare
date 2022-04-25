@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../Main";
 import Moment from "react-moment";
 import Collapse from "@nextui-org/react/collapse";
 import { RiSearch2Fill } from "react-icons/ri";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { MdDone, MdDoneAll } from "react-icons/md";
 import profileHolder from "../../../assets/profile_placeholder.png";
-import StoryTile from "./StoryTile";
 import ConversationLoader from "../../../loaders/ConversationLoader";
+import { useSelector } from "react-redux";
 
 const Conversations = ({
   isConversationsLoading,
@@ -16,8 +17,21 @@ const Conversations = ({
   isStoriesOpened,
   setIsStoriesOpened,
 }) => {
+  const { socket } = useContext(AppContext);
+  const { user } = useSelector((state) => state.auth);
+  const [activeFriends, setActiveFriends] = useState([]);
   const [isShowingOnline, setIsShowingOnline] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    socket.current.on("activeUsers", (activeUsers) => {
+      console.log(activeUsers);
+      const filteredUsers = activeUsers.filter(
+        (newUser) => newUser.id !== user.id
+      );
+      setActiveFriends(filteredUsers);
+    });
+  }, [user.id, socket]);
 
   return (
     <div className="flex flex-col w-1/5 h-full bg-white shadow-sm">
@@ -34,17 +48,21 @@ const Conversations = ({
           />
         )}
       </div>
-      {/* Online */}
+      {/* Active Friends */}
       <div
         className={`flex flex-col w-full items-start bg-white transition-all duration-500 ease-in-out ${
-          isShowingOnline ? "h-52" : "h-32"
+          activeFriends.length > 0
+            ? isShowingOnline
+              ? "h-52"
+              : "h-32"
+            : "h-12"
         }`}
       >
         <div className="flex flex-row w-full items-center justify-between bg-white px-3">
           <h5 className="font-semibold tracking-wider text-black">
-            Online ({stories.length})
+            Online ({activeFriends.length})
           </h5>
-          {stories.length > 1 && (
+          {activeFriends.length > 0 && (
             <TiArrowSortedDown
               onClick={(e) => setIsShowingOnline(!isShowingOnline)}
               fontSize={25}
@@ -54,20 +72,28 @@ const Conversations = ({
             />
           )}
         </div>
-        {stories.length > 1 && (
+        {activeFriends.length > 0 && (
           <div
             className={`grid grid-cols-5 gap-4 my-4 transition-all duration-700 ease-in-out px-3 ${
               isShowingOnline ? "overflow-y-scroll" : "overflow-hidden"
             }`}
           >
-            {stories.map((story, index) => (
-              <div className="flex relative h-14">
-                <img
-                  src={profileHolder}
-                  alt="user profile"
-                  className="object-contain h-14 py-2 px-4  bg-gray-200 rounded-full"
-                />
-                <div className="absolute flex bottom-0 right-2 h-3 w-3 rounded-full bg-red-400"></div>
+            {activeFriends.map((friend, index) => (
+              <div key={index} className="flex relative">
+                {friend.user.profile === "" ? (
+                  <img
+                    src={profileHolder}
+                    alt="user profile"
+                    className="object-contain h-14 py-2 px-4  bg-gray-200 rounded-full"
+                  />
+                ) : (
+                  <img
+                    src={friend.user.profile}
+                    alt="user profile"
+                    className="object-cover h-14 bg-gray-200 rounded-full"
+                  />
+                )}
+                <div className="absolute flex bottom-0 right-2 h-3 w-3 rounded-full bg-green-400"></div>
               </div>
             ))}
           </div>
