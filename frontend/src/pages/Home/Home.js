@@ -7,8 +7,7 @@ import Lottie from "lottie-react";
 import newMessage from "../../assets/new-message.json";
 import ConversationDetails from "./components/ConversationDetails";
 import ConversationAttachments from "./components/ConversationAttachments";
-import { getConversations } from "../../services/conversation_services";
-import { useQuery } from "react-query";
+
 import { AppContext } from "../Main";
 
 const stories = [
@@ -60,25 +59,6 @@ const Home = () => {
   const [isStoriesOpened, setIsStoriesOpened] = useState(false);
   const dispatch = useDispatch();
 
-  const {
-    isLoading: isConversationsLoading,
-    data: conversations,
-    refetch: conversationsRefetch,
-    isError: isConversationsError,
-  } = useQuery(
-    ["conversations"],
-    async () => {
-      const response = await getConversations(user.id);
-      return response.data.conversations;
-    },
-    {
-      keepPreviousData: true,
-      retryOnMount: false,
-      refetchOnMount: true,
-      refetchOnWindowFocus: false,
-    }
-  );
-
   const handleLogout = async (e) => {
     e.preventDefault();
     await logout();
@@ -90,9 +70,7 @@ const Home = () => {
       <div className="flex h-full">
         {/* Conversations */}
         <Conversations
-          isConversationsLoading={isConversationsLoading}
           stories={stories}
-          conversations={conversations}
           setCurrentConversation={setCurrentConversation}
           isStoriesOpened={isStoriesOpened}
           setIsStoriesOpened={setIsStoriesOpened}

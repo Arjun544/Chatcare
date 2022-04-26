@@ -20,7 +20,12 @@ exports.allUsers = async (req, res) => {
         profile: true,
         location: true,
         active: true,
-        conversations: true,
+        conversations: {
+          include: {
+            messages: true,
+            to: true,
+          },
+        },
       },
     });
     return res.json({
@@ -46,11 +51,17 @@ exports.userFriends = async (req, res) => {
       },
       select: {
         friends: true,
+        conversations: {
+          include: {
+            messages: true,
+            to: true,
+          },
+        },
       },
     });
     return res.json({
       status: true,
-      friends: user[0].friends,
+      user: user[0],
     });
   } catch (err) {
     console.log(err);

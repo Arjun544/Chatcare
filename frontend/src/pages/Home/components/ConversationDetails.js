@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useContext, useLayoutEffect, useRef, useState } from "react";
 import User from "@nextui-org/react/user";
 import Lottie from "lottie-react";
 import newMessage from "../../../assets/new-message.json";
@@ -15,9 +15,12 @@ import { StageSpinner } from "react-spinners-kit";
 import MessageTile from "./MessageTile";
 import { sendMessage } from "../../../services/message_services";
 import { useSelector } from "react-redux";
+import { AppContext } from "../../Main";
+import { createConversation } from "../../../services/conversation_services";
 
-const ConversationDetails = ({ conversation, setConversations }) => {
+const ConversationDetails = ({ conversation }) => {
   const { user } = useSelector((state) => state.auth);
+  const { conversations } = useContext(AppContext);
   const scrollRef = useRef(null);
   const [text, setText] = useState("");
   const [isOnline, setIsOnline] = useState(true);
@@ -35,14 +38,9 @@ const ConversationDetails = ({ conversation, setConversations }) => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    console.log(text, conversation.to.id, user.id, conversation.id);
-
-    await sendMessage(
-      text,
-      conversation.to.id,
-      user.id,
-      conversation.id
-    );
+    conversations.includes(conversation)
+      ? await sendMessage(text, conversation.to.id, user.id, conversation.id)
+      : await createConversation(user.id, conversation.toId, text);
     setText("");
     scrollToBottom();
   };

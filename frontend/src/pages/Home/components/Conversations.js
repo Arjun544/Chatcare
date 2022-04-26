@@ -10,14 +10,13 @@ import ConversationLoader from "../../../loaders/ConversationLoader";
 import { useSelector } from "react-redux";
 
 const Conversations = ({
-  isConversationsLoading,
   stories,
-  conversations,
   setCurrentConversation,
   isStoriesOpened,
   setIsStoriesOpened,
 }) => {
-  const { socket } = useContext(AppContext);
+  const { socket, isConversationsLoading, conversations } =
+    useContext(AppContext);
   const { user } = useSelector((state) => state.auth);
   const [activeFriends, setActiveFriends] = useState([]);
   const [isShowingOnline, setIsShowingOnline] = useState(false);
@@ -99,6 +98,7 @@ const Conversations = ({
           </div>
         )}
       </div>
+      {/* Conversations */}
       <div className="flex flex-col flex-grow">
         <div
           className={`flex flex-col transition-all duration-700 ease-in-out ${
@@ -145,10 +145,7 @@ const Conversations = ({
                 conversations.map((conversation, index) => (
                   <div
                     key={index}
-                    onClick={(e) => {
-                      console.log(conversation);
-                      setCurrentConversation(conversation);
-                    }}
+                    onClick={(e) => setCurrentConversation(conversation)}
                     className="flex w-full h-20 items-center justify-between cursor-pointer px-4 hover:bg-gray-200 rounded-2xl"
                   >
                     <div className="flex items-center gap-4">
@@ -159,12 +156,16 @@ const Conversations = ({
                       />
                       <div className="flex flex-col">
                         <h1 className="font-semibold text-black tracking-wider">
-                          {conversation.to.username}
+                          {conversation.to.id === user.id ? conversation.by.username : conversation.to.username}
                         </h1>
                         <div className="flex items-center gap-2">
                           {conversation.isRead ? <MdDoneAll /> : <MdDone />}
                           <p className="text-black tracking-wider text-sm">
-                            {conversation.messages[conversation.messages.length-1].text}
+                            {
+                              conversation.messages[
+                                conversation.messages.length - 1
+                              ].text
+                            }
                           </p>
                         </div>
                       </div>

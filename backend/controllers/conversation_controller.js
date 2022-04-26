@@ -57,8 +57,12 @@ exports.getUserConversations = async (req, res) => {
           { toId: +userId },
         ],
       },
+      orderBy: {
+        createdAt: "desc",
+      },
       include: {
         to: true,
+        by: true,
         messages: true,
       },
     });

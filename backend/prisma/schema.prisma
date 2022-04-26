@@ -50,7 +50,7 @@ model Token {
 model Conversation {
   id        Int       @id @default(autoincrement())
   by        User      @relation("by", fields: [byId], references: [id])
-  byId      Int       @unique
+  byId      Int       
   to        User      @relation("to", fields: [toId], references: [id])
   toId      Int       @unique
   messages  Message[]

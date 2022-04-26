@@ -20,7 +20,7 @@ const Friends = () => {
     ["friends"],
     async () => {
       const response = await getUserFriends(user.email);
-      return response.data.friends;
+      return response.data.user;
     },
     {
       keepPreviousData: true,
@@ -57,7 +57,7 @@ const Friends = () => {
       console.log(friends);
       const response = await getAllUsers(
         user.email,
-        friends.map((friend) => friend.id)
+        friends.friends.map((friend) => friend.id)
       );
       return response.data.users;
     },
@@ -84,17 +84,18 @@ const Friends = () => {
           <div className="w-full h-full flex items-center justify-center">
             Something went wrong...
           </div>
-        ) : friends.length === 0 ? (
+        ) : friends.friends.length === 0 ? (
           <span className="font-semibold tracking-wider text-slate-400 flex w-full items-center justify-center my-10">
             No friends
           </span>
         ) : (
           <div className="grid grid-cols-9 gap-6 bg-white w-full h-fit my-4">
             {friends &&
-              friends.map((friend) => (
+              friends.friends.map((friend) => (
                 <UserTile
                   key={friend.id}
                   user={friend}
+                  friendConversations={friends.conversations}
                   isFriend={true}
                   friendsRefetch={friendsRefetch}
                   usersRefetch={usersRefetch}

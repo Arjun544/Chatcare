@@ -7,6 +7,8 @@ import {
   useState,
 } from "react";
 import { io } from "socket.io-client";
+import { getConversations } from "../services/conversation_services";
+import { useQuery } from "react-query";
 import { Route, Routes } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import WidgetLoader from "../components/WidgetLoader";
@@ -39,12 +41,36 @@ const Main = () => {
     });
 
     socket.current.emit("addUser", user);
-
   }, []);
+
+  const {
+    isLoading: isConversationsLoading,
+    data: conversations,
+    refetch: conversationsRefetch,
+    isError: isConversationsError,
+  } = useQuery(
+    ["conversations"],
+    async () => {
+      const response = await getConversations(user.id);
+      return response.data.conversations;
+    },
+    {
+      keepPreviousData: true,
+      retryOnMount: false,
+      refetchOnMount: true,
+      refetchOnWindowFocus: false,
+    }
+  );
 
   return (
     <AppContext.Provider
-      value={{ socket, currentConversation, setCurrentConversation }}
+      value={{
+        socket,
+        isConversationsLoading,
+        conversations,
+        currentConversation,
+        setCurrentConversation,
+      }}
     >
       <div className="flex">
         <Navbar />

@@ -6,8 +6,10 @@ import { Emoji, Picker } from "emoji-mart";
 import { Modal } from "@nextui-org/react";
 import User from "@nextui-org/react/user";
 import profileHolder from "../../../assets/profile_placeholder.png";
+import { useSelector } from "react-redux";
 
 const MessageTile = ({ message }) => {
+  const { user: currentUser } = useSelector((state) => state.auth);
   const [isMsgHovered, setIsMsgHovered] = useState(false);
   const [isEmojiHovered, setIsEmojiHovered] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
@@ -16,10 +18,10 @@ const MessageTile = ({ message }) => {
   return (
     <div
       className={`flex mb-3 ${
-        message.isMine ? "justify-end" : "justify-start"
+       message.senderId === currentUser.id  ? "justify-end" : "justify-start"
       }`}
     >
-      {message.isMine ? (
+      {message.senderId === currentUser.id ? (
         <div
           onMouseEnter={(e) => setIsMsgHovered(true)}
           onMouseLeave={(e) => {
