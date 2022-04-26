@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../services/auth_services";
 import { setAuth } from "../../redux/reducers/authSlice";
 import Conversations from "./components/Conversations";
-import StoryTile from "./components/StoryTile";
+import Lottie from "lottie-react";
+import newMessage from "../../assets/new-message.json";
 import ConversationDetails from "./components/ConversationDetails";
 import ConversationAttachments from "./components/ConversationAttachments";
 import { getConversations } from "../../services/conversation_services";
@@ -54,7 +55,8 @@ const stories = [
 
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
-  const { currentConversation, setCurrentConversation } = useContext(AppContext);
+  const { currentConversation, setCurrentConversation } =
+    useContext(AppContext);
   const [isStoriesOpened, setIsStoriesOpened] = useState(false);
   const dispatch = useDispatch();
 
@@ -95,6 +97,7 @@ const Home = () => {
           isStoriesOpened={isStoriesOpened}
           setIsStoriesOpened={setIsStoriesOpened}
         />
+
         <div className="flex flex-col flex-grow">
           {/* Stories */}
           {/* {isStoriesOpened && stories.length > 1 && (
@@ -105,9 +108,10 @@ const Home = () => {
             </div>
           )} */}
           {/* Conversation Details */}
+
           <ConversationDetails conversation={currentConversation} />
         </div>
-        {/* <ConversationAttachments /> */}
+        <ConversationAttachments conversation={currentConversation} />
       </div>
     </div>
   );

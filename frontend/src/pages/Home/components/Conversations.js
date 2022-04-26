@@ -145,7 +145,10 @@ const Conversations = ({
                 conversations.map((conversation, index) => (
                   <div
                     key={index}
-                    onClick={(e) => setCurrentConversation(conversation)}
+                    onClick={(e) => {
+                      console.log(conversation);
+                      setCurrentConversation(conversation);
+                    }}
                     className="flex w-full h-20 items-center justify-between cursor-pointer px-4 hover:bg-gray-200 rounded-2xl"
                   >
                     <div className="flex items-center gap-4">
@@ -161,7 +164,7 @@ const Conversations = ({
                         <div className="flex items-center gap-2">
                           {conversation.isRead ? <MdDoneAll /> : <MdDone />}
                           <p className="text-black tracking-wider text-sm">
-                            {conversation.messages[0].text}
+                            {conversation.messages[conversation.messages.length-1].text}
                           </p>
                         </div>
                       </div>

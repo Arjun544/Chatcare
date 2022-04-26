@@ -13,6 +13,15 @@ exports.allUsers = async (req, res) => {
         },
         id: { notIn: friendsIds },
       },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        profile: true,
+        location: true,
+        active: true,
+        conversations: true,
+      },
     });
     return res.json({
       status: true,

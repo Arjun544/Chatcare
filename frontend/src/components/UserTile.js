@@ -80,18 +80,31 @@ const UserTile = ({
     refetchRequests();
   };
 
-  const handleStartConversation = (e, conversation) => {
+  const handleStartConversation = (e) => {
     e.preventDefault();
-    setIsStartConversation(true);
-    // navigate("/");
-    // setCurrentConversation(conversation);
+    // setIsStartConversation(true);
+    console.log(user.conversa);
+    setCurrentConversation({
+      id: 1,
+      byId: currentUser,
+      toId: user,
+      createdAt: "2022-04-20T05:05:07.267Z",
+      updatedAt: "2022-04-20T05:05:07.291Z",
+      to: user,
+      messages: [],
+    });
+    navigate("/");
   };
 
   const handleCreateConversation = async (e) => {
     e.preventDefault();
     try {
       setIsLoading(true);
-      const { data } = await createConversation(currentUser.id, user.id , newMessage);
+      const { data } = await createConversation(
+        currentUser.id,
+        user.id,
+        newMessage
+      );
 
       setIsLoading(false);
       setIsStartConversation(false);
@@ -110,6 +123,7 @@ const UserTile = ({
   return (
     <div className="flex flex-col h-fit w-44 bg-slate-100 rounded-2xl gap-2 overflow-hidden cursor-pointer hover:scale-95 transition-all duration-500 ease-in-out">
       <img
+        onClick={(e) => console.log(user)}
         src={user.profile === "" ? profileHolder : user.profile}
         alt="user profile"
         className="object-cover h-40 w-full"
@@ -170,7 +184,7 @@ const UserTile = ({
               placement="rightStart"
             >
               <button
-                onClick={(e) => handleAddFriend(e)}
+                onClick={(e) => handleStartConversation(e)}
                 className="bg-green-300 rounded-xl p-2 mb-3 font-semibold tracking-wider text-sm hover:bg-green-400"
               >
                 <RiChatSmile3Fill fontSize={20} />

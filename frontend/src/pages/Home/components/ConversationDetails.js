@@ -13,8 +13,11 @@ import { HiDotsVertical, HiEmojiHappy } from "react-icons/hi";
 import profileHolder from "../../../assets/profile_placeholder.png";
 import { StageSpinner } from "react-spinners-kit";
 import MessageTile from "./MessageTile";
+import { sendMessage } from "../../../services/message_services";
+import { useSelector } from "react-redux";
 
 const ConversationDetails = ({ conversation, setConversations }) => {
+  const { user } = useSelector((state) => state.auth);
   const scrollRef = useRef(null);
   const [text, setText] = useState("");
   const [isOnline, setIsOnline] = useState(true);
@@ -27,11 +30,20 @@ const ConversationDetails = ({ conversation, setConversations }) => {
   };
 
   useLayoutEffect(() => {
-   conversation !== null && scrollToBottom();
+    conversation !== null && scrollToBottom();
   }, [conversation]);
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
+    console.log(text, conversation.to.id, user.id, conversation.id);
+
+    await sendMessage(
+      text,
+      conversation.to.id,
+      user.id,
+      conversation.id
+    );
+    setText("");
     scrollToBottom();
   };
 
@@ -48,9 +60,9 @@ const ConversationDetails = ({ conversation, setConversations }) => {
         </div>
       ) : (
         <div className="flex flex-col flex-grow bg-white shadow-sm overflow-hidden">
-          <div className="flex bg-gray-200 w-full h-20 justify-between items-center px-8">
+          <div className="flex bg-white w-full h-20 justify-between items-center px-8 shadow-md">
             <div className="flex items-center">
-              <User src={profileHolder} zoomed="true" bordered />
+              <User src={profileHolder} zoomed="true" />
               <div className="flex flex-col">
                 <h1 className="font-semibold text-black tracking-wider">
                   {conversation.to.username}
@@ -92,7 +104,7 @@ const ConversationDetails = ({ conversation, setConversations }) => {
           {/* Messages */}
           <div
             ref={scrollRef}
-            className="flex flex-col h-full w-full bg-gray-100 py-4 overflow-y-scroll"
+            className="flex flex-col h-full w-full bg-slate-200 py-4 overflow-y-auto"
           >
             {conversation.messages < 1 ? (
               <div className="flex h-full w-full flex-col items-center justify-center">
@@ -162,8 +174,6 @@ const ConversationDetails = ({ conversation, setConversations }) => {
       )}
     </>
   );
-
- 
 };
 
 export default ConversationDetails;

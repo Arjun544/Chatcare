@@ -3,7 +3,7 @@ const prisma = require("../config/prisma");
 exports.createConversation = async (req, res) => {
   const { byId, toId, message } = req.body;
   try {
-    const conversations = await prisma.conversation.create({
+    await prisma.conversation.create({
       data: {
         by: {
           connect: {
@@ -32,7 +32,6 @@ exports.createConversation = async (req, res) => {
         },
       },
     });
-    console.log(conversations);
     return res.json({
       success: true,
       message: "Conversation created",
@@ -51,7 +50,12 @@ exports.getUserConversations = async (req, res) => {
   try {
     const conversations = await prisma.conversation.findMany({
       where: {
-        byId: +userId,
+        OR: [
+          {
+            byId: +userId,
+          },
+          { toId: +userId },
+        ],
       },
       include: {
         to: true,

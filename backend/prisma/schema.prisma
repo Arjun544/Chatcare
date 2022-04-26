@@ -62,6 +62,7 @@ model Message {
   id             Int           @id @default(autoincrement())
   text           String
   image          String?
+  isMine         Boolean       @default(false)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @default(now())
   receiver       User          @relation("Recevied", fields: [receiverId], references: [id])
