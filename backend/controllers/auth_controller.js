@@ -87,7 +87,6 @@ exports.register = async (req, res) => {
       },
       include: {
         requests: true,
-        msgRequests: true,
         friends: true,
       },
     });
@@ -120,7 +119,6 @@ exports.register = async (req, res) => {
         location: newUser.location,
         friends: newUser.friends,
         requests: newUser.requests,
-        msgRequests: newUser.msgRequests,
       },
       isAuth: true,
     });
@@ -177,7 +175,6 @@ exports.activate = async (req, res) => {
         include: {
           requests: true,
           friends: true,
-          msgRequests: true,
         },
       });
 
@@ -192,7 +189,6 @@ exports.activate = async (req, res) => {
           location: newUser.location,
           friends: newUser.friends,
           requests: newUser.requests,
-          msgRequests: newUser.msgRequests,
         },
         isAuth: true,
       });
@@ -232,7 +228,6 @@ exports.login = async (req, res) => {
         tokens: true,
         friends: true,
         requests: true,
-        msgRequests: true,
       },
     });
     if (!user) {
@@ -280,7 +275,6 @@ exports.login = async (req, res) => {
         location: user.location,
         friends: user.friends,
         requests: user.requests,
-        msgRequests: user.msgRequests,
       },
       isAuth: true,
     });
@@ -384,7 +378,6 @@ exports.sendCode = async (req, res) => {
       include: {
         requests: true,
         friends: true,
-        msgRequests: true,
       },
     });
     return res.json({
@@ -398,7 +391,6 @@ exports.sendCode = async (req, res) => {
         location: user.location,
         friends: user.friends,
         requests: user.requests,
-        msgRequests: user.msgRequests,
       },
       isAuth: true,
     });
@@ -493,7 +485,6 @@ exports.refresh = async (req, res) => {
     include: {
       requests: true,
       friends: true,
-      msgRequests: true,
     },
   });
   if (!user) {
@@ -532,7 +523,6 @@ exports.refresh = async (req, res) => {
       location: user.location,
       friends: user.friends,
       requests: user.requests,
-      msgRequests: user.msgRequests,
     },
     isAuth: true,
   });
@@ -566,7 +556,6 @@ exports.gmailLogin = async (req, res) => {
         location: true,
         friends: true,
         requests: true,
-        msgRequests: true,
       },
     });
 
@@ -606,7 +595,6 @@ exports.gmailLogin = async (req, res) => {
         location: user.location,
         friends: user.friends,
         requests: user.requests,
-        msgRequests: user.msgRequests,
       },
       isAuth: true,
     });
@@ -656,7 +644,6 @@ exports.gmailSignup = async (req, res) => {
       },
       include: {
         requests: true,
-        msgRequests: true,
         friends: true,
       },
     });
@@ -690,7 +677,6 @@ exports.gmailSignup = async (req, res) => {
         location: user.location,
         friends: user.friends,
         requests: user.requests,
-        msgRequests: user.msgRequests,
       },
       isAuth: true,
     });

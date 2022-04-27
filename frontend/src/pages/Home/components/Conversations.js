@@ -15,7 +15,8 @@ const Conversations = ({
   isStoriesOpened,
   setIsStoriesOpened,
 }) => {
-  const { socket, isConversationsLoading, conversations } =
+  const groupConversations = [];
+  const { socket, isChatConversationsLoading, chatConversations } =
     useContext(AppContext);
   const { user } = useSelector((state) => state.auth);
   const [activeFriends, setActiveFriends] = useState([]);
@@ -125,6 +126,7 @@ const Conversations = ({
             </div>
           )}
           {/* Messages */}
+
           <Collapse.Group divider={false}>
             <Collapse
               title={
@@ -135,14 +137,14 @@ const Conversations = ({
               expanded={true}
               showArrow={false}
             >
-              {isConversationsLoading ? (
+              {isChatConversationsLoading ? (
                 <ConversationLoader />
-              ) : !conversations || conversations === undefined ? (
+              ) : !chatConversations || chatConversations.length === 0 ? (
                 <p className="text-slate-400 text-center tracking-wider font-semibold">
                   No chats yet
                 </p>
               ) : (
-                conversations.map((conversation, index) => (
+                chatConversations.map((conversation, index) => (
                   <div
                     key={index}
                     onClick={(e) => setCurrentConversation(conversation)}
@@ -150,29 +152,48 @@ const Conversations = ({
                   >
                     <div className="flex items-center gap-4">
                       <img
-                        src={profileHolder}
-                        alt="user profile holder"
+                        src={
+                          conversation.members.find(
+                            (member) => member.id !== user.id
+                          ).profile === ""
+                            ? profileHolder
+                            : conversation.members.find(
+                                (member) => member.id !== user.id
+                              ).profile
+                        }
+                        alt="user profile"
                         className="h-10 w-10 object-contain rounded-full bg-white"
                       />
                       <div className="flex flex-col">
-                        <h1 className="font-semibold text-black tracking-wider">
-                          {conversation.to.id === user.id ? conversation.by.username : conversation.to.username}
+                        <h1 className="font-semibold text-sm text-black tracking-wider">
+                          {
+                            conversation.members.find(
+                              (member) => member.id !== user.id
+                            ).username
+                          }
                         </h1>
                         <div className="flex items-center gap-2">
                           {conversation.isRead ? <MdDoneAll /> : <MdDone />}
-                          <p className="text-black tracking-wider text-sm">
+                          <p className="text-black tracking-wider text-sm w-32 line-clamp-1 text-ellipsis">
                             {
                               conversation.messages[
                                 conversation.messages.length - 1
                               ].text
-                            }
+                            }{" "}
+                            dfsdfsds dfs dfs dsd s
                           </p>
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2 items-center">
+                    <div className="flex flex-col gap-2 items-end">
                       <h1 className="text-slate-300 text-xs tracking-wider font-semibold">
-                        <Moment fromNow>{conversation.createdAt}</Moment>
+                        <Moment fromNow>
+                          {
+                            conversation.messages[
+                              conversation.messages.length - 1
+                            ].createdAt
+                          }
+                        </Moment>
                       </h1>
                       <h1 className="text-xs tracking-wider font-semibold bg-green-400 text-black py-1 px-2 rounded-full">
                         2

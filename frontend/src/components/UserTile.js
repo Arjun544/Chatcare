@@ -24,7 +24,7 @@ const UserTile = ({
   isFriend,
   isRequest = false,
 }) => {
-  const { setCurrentConversation } = useContext(AppContext);
+  const { chatConversations, setCurrentConversation } = useContext(AppContext);
   const navigate = useNavigate();
   const { user: currentUser } = useSelector((state) => state.auth);
   const [addedFriend, setAddedFriend] = useState(
@@ -77,27 +77,24 @@ const UserTile = ({
 
   const handleStartConversation = (e) => {
     e.preventDefault();
-console.log(user.conversations);
+
     const conversation = isFriend
-      ? friendConversations.find(
-          (conversation) =>
-            conversation.byId === user.id || conversation.toId === user.id
+      ? friendConversations.filter((item) =>
+          item.members.map((member) => member.id).includes(user.id)
         )
-      : user.conversations.find(
-          (conversation) =>
-            conversation.byId === user.id || conversation.toId === user.id
+      : user.conversations.filter((item) =>
+          item.members.map((member) => member.id).includes(user.id)
         );
-    if (conversation) {
-      setCurrentConversation(conversation);
+
+    if (conversation[0]) {
+      setCurrentConversation(conversation[0]);
     } else {
       setCurrentConversation({
         id: 1,
-        byId: currentUser.id,
-        toId: user.id,
+        members: [currentUser, user],
+        messages: [],
         createdAt: "2022-04-20T05:05:07.267Z",
         updatedAt: "2022-04-20T05:05:07.291Z",
-        to: user,
-        messages: [],
       });
     }
 

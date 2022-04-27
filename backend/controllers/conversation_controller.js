@@ -5,15 +5,8 @@ exports.createConversation = async (req, res) => {
   try {
     await prisma.conversation.create({
       data: {
-        by: {
-          connect: {
-            id: +byId,
-          },
-        },
-        to: {
-          connect: {
-            id: +toId,
-          },
+        members: {
+          connect: [{ id: +byId }, { id: +toId }],
         },
         messages: {
           create: {
@@ -50,19 +43,17 @@ exports.getUserConversations = async (req, res) => {
   try {
     const conversations = await prisma.conversation.findMany({
       where: {
-        OR: [
-          {
-            byId: +userId,
+        members: {
+          some: {
+            id: +userId,
           },
-          { toId: +userId },
-        ],
+        },
       },
       orderBy: {
         createdAt: "desc",
       },
       include: {
-        to: true,
-        by: true,
+        members: true,
         messages: true,
       },
     });

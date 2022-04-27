@@ -24,8 +24,6 @@ model User {
   emailTokenExpires    DateTime
   resetPasswordToken   Int
   resetPasswordExpires DateTime
-  conversations        Conversation[] @relation(name: "by")
-  conversationsTo      Conversation[] @relation(name: "to")
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @default(now())
   userId               Int?
@@ -35,7 +33,7 @@ model User {
   friendsRelation      User[]         @relation("friends")
   recevied             Message[]      @relation(name: "Recevied")
   sent                 Message[]      @relation(name: "Sent")
-  msgRequests          MsgRequest[]
+  conversations        Conversation[]
 }
 
 model Token {
@@ -49,10 +47,7 @@ model Token {
 
 model Conversation {
   id        Int       @id @default(autoincrement())
-  by        User      @relation("by", fields: [byId], references: [id])
-  byId      Int       
-  to        User      @relation("to", fields: [toId], references: [id])
-  toId      Int       @unique
+  members   User[]
   messages  Message[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
@@ -71,13 +66,4 @@ model Message {
   senderId       Int
   conversation   Conversation? @relation(fields: [conversationId], references: [id])
   conversationId Int?
-}
-
-model MsgRequest {
-  id        Int      @id @default(autoincrement())
-  msg       String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
 }

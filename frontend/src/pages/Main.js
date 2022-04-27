@@ -44,14 +44,15 @@ const Main = () => {
   }, []);
 
   const {
-    isLoading: isConversationsLoading,
-    data: conversations,
-    refetch: conversationsRefetch,
+    isLoading: isChatConversationsLoading,
+    data: chatConversations,
+    refetch: chatConversationsRefetch,
     isError: isConversationsError,
   } = useQuery(
     ["conversations"],
     async () => {
       const response = await getConversations(user.id);
+      console.log(response.data.conversations);
       return response.data.conversations;
     },
     {
@@ -66,8 +67,9 @@ const Main = () => {
     <AppContext.Provider
       value={{
         socket,
-        isConversationsLoading,
-        conversations,
+        isChatConversationsLoading,
+        chatConversations,
+        chatConversationsRefetch,
         currentConversation,
         setCurrentConversation,
       }}

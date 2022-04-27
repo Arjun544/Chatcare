@@ -20,7 +20,8 @@ import { createConversation } from "../../../services/conversation_services";
 
 const ConversationDetails = ({ conversation }) => {
   const { user } = useSelector((state) => state.auth);
-  const { conversations } = useContext(AppContext);
+  const { chatConversations, chatConversationsRefetch } =
+    useContext(AppContext);
   const scrollRef = useRef(null);
   const [text, setText] = useState("");
   const [isOnline, setIsOnline] = useState(true);
@@ -38,9 +39,13 @@ const ConversationDetails = ({ conversation }) => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    conversations.includes(conversation)
-      ? await sendMessage(text, conversation.to.id, user.id, conversation.id)
-      : await createConversation(user.id, conversation.toId, text);
+    const receiverId = conversation.members.find(
+      (member) => member.id !== user.id
+    ).id;
+    chatConversations.includes(conversation)
+      ? await sendMessage(text, receiverId, user.id, conversation.id)
+      : await createConversation(user.id, receiverId, text);
+    await chatConversationsRefetch();
     setText("");
     scrollToBottom();
   };
@@ -60,10 +65,23 @@ const ConversationDetails = ({ conversation }) => {
         <div className="flex flex-col flex-grow bg-white shadow-sm overflow-hidden">
           <div className="flex bg-white w-full h-20 justify-between items-center px-8 shadow-md">
             <div className="flex items-center">
-              <User src={profileHolder} zoomed="true" />
+              <User
+                src={
+                  conversation.members.find((member) => member.id !== user.id)
+                    .profile === ""
+                    ? profileHolder
+                    : conversation.members.find(
+                        (member) => member.id !== user.id
+                      ).profile
+                }
+                zoomed="true"
+              />
               <div className="flex flex-col">
                 <h1 className="font-semibold text-black tracking-wider">
-                  {conversation.to.username}
+                  {
+                    conversation.members.find((member) => member.id !== user.id)
+                      .username
+                  }
                 </h1>
                 {isTyping ? (
                   <h1 className="text-green-400 font-medium tracking-wider text-xs">
@@ -125,7 +143,11 @@ const ConversationDetails = ({ conversation }) => {
             {isTyping && (
               <div className="flex items-center justify-center gap-2 mt-6">
                 <h1 className="text-slate-400 tracking-wider text-sm">
-                  {conversation.to.username} is typing{" "}
+                  {
+                    conversation.members.find((member) => member.id !== user.id)
+                      .username
+                  }
+                  is typing
                 </h1>
                 <StageSpinner sty size={30} color="#44C7F4" loading={true} />
               </div>
@@ -135,7 +157,7 @@ const ConversationDetails = ({ conversation }) => {
           <div className="flex items-center w-full h-20 justify-between bg-white shadow-sm px-8">
             <RiAttachment2
               fontSize={35}
-              className="bg-blue-100 py-2 px-2 rounded-full hover:bg-blue-300 cursor-pointer transition-all duration-700 ease-in-out"
+              className="bg-blue-200 py-2 px-2 rounded-full hover:bg-blue-300 cursor-pointer transition-all duration-700 ease-in-out"
             />
             <form
               action="submit"
@@ -147,8 +169,8 @@ const ConversationDetails = ({ conversation }) => {
                 onChange={(e) => setText(e.target.value)}
                 type="text"
                 required
-                placeholder={`Type a new message for ${conversation.to.username}...`}
-                className="flex flex-grow mx-6 placeholder:text-sm tracking-wider font-medium text-black"
+                placeholder="Type a new message..."
+                className="flex flex-grow mx-6 placeholder:text-sm text-sm tracking-wider font-medium text-black"
               />
               <div className="flex items-center gap-10">
                 <HiEmojiHappy

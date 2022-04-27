@@ -7,6 +7,7 @@ import { Modal } from "@nextui-org/react";
 import User from "@nextui-org/react/user";
 import profileHolder from "../../../assets/profile_placeholder.png";
 import { useSelector } from "react-redux";
+import Moment from "react-moment";
 
 const MessageTile = ({ message }) => {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -18,7 +19,7 @@ const MessageTile = ({ message }) => {
   return (
     <div
       className={`flex mb-3 ${
-       message.senderId === currentUser.id  ? "justify-end" : "justify-start"
+        message.senderId === currentUser.id ? "justify-end" : "justify-start"
       }`}
     >
       {message.senderId === currentUser.id ? (
@@ -32,6 +33,12 @@ const MessageTile = ({ message }) => {
         >
           {isMsgHovered && (
             <div className="flex items-center gap-3">
+              <Moment
+                format="MMMM Do YYYY, h:mm a"
+                className="text-slate-500 text-sm"
+              >
+                {message.createdAt}
+              </Moment>
               <HiDotsVertical
                 fontSize={18}
                 className="fill-slate-300 hover:fill-black cursor-pointer"
@@ -115,6 +122,12 @@ const MessageTile = ({ message }) => {
                 fontSize={18}
                 className="fill-slate-300 hover:fill-black cursor-pointer"
               />
+              <Moment
+                format="MMMM Do YYYY, h:mm a"
+                className="text-slate-500 text-sm"
+              >
+                {message.createdAt}
+              </Moment>
               {isEmojiHovered && (
                 <div className="absolute z-50 top-10 left-20">
                   <Picker

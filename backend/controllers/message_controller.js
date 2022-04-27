@@ -7,7 +7,6 @@ exports.sendMessage = async (req, res) => {
       data: {
         text,
         image: null,
-        isMine: true,
         sender: {
           connect: {
             id: +senderId,

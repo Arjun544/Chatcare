@@ -22,8 +22,8 @@ exports.allUsers = async (req, res) => {
         active: true,
         conversations: {
           include: {
+            members: true,
             messages: true,
-            to: true,
           },
         },
       },
@@ -53,8 +53,8 @@ exports.userFriends = async (req, res) => {
         friends: true,
         conversations: {
           include: {
+            members: true,
             messages: true,
-            to: true,
           },
         },
       },
