@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Popover } from "@nextui-org/react";
 import { Picker } from "emoji-mart";
 import { useFilePicker } from "use-file-picker";
@@ -9,12 +9,11 @@ import { MdOutlineClose } from "react-icons/md";
 import { BiImageAdd } from "react-icons/bi";
 import Tooltip from "@nextui-org/react/tooltip";
 import { HiEmojiHappy } from "react-icons/hi";
-import { Modal } from "@nextui-org/react";
+import AudioDialogue from "./AudioDialogue";
 
 const MessageInput = ({ text, setText, sendMessage }) => {
   const [files, setFiles] = useState([]);
   const [isAudioDialogueOpen, setIsAudioDialogueOpen] = useState(false);
-  const [recordStatus, setRecordStatus] = useState("idle");
   const [openFileSelector, { filesContent, clear }] = useFilePicker({
     multiple: true,
     readAs: "DataURL",
@@ -50,24 +49,6 @@ const MessageInput = ({ text, setText, sendMessage }) => {
   const removeFile = (e, file) => {
     e.preventDefault();
     setFiles(files.filter((f) => f !== file));
-  };
-
-  const handleRecord = (e) => {
-    e.preventDefault();
-    switch (recordStatus) {
-      case "idle":
-        setRecordStatus("recording");
-        break;
-      case "recording":
-        setRecordStatus("stop");
-        break;
-      case "stop":
-        setRecordStatus("recording");
-        break;
-        break;
-      default:
-        break;
-    }
   };
 
   return (
@@ -168,7 +149,6 @@ const MessageInput = ({ text, setText, sendMessage }) => {
               />
             </Popover.Content>
           </Popover>
-
           <Tooltip content="Send voice" color="invert" placement="top">
             <RiMicFill
               onClick={() => setIsAudioDialogueOpen(true)}
@@ -186,46 +166,10 @@ const MessageInput = ({ text, setText, sendMessage }) => {
         </div>
       </form>
       {isAudioDialogueOpen && (
-        <Modal
-          width="40%"
-          closeButton
-          blur
-          aria-labelledby="modal-title"
-          open={isAudioDialogueOpen}
-          onClose={(e) => setIsAudioDialogueOpen(false)}
-        >
-          <h1 className="text-black tracking-wider font-semibold">
-            Record a message
-          </h1>
-          <h1 className="text-slate-300 text-sm tracking-wider font-semibold">
-            Start recording
-          </h1>
-          <div className="flex flex-grow items-center justify-center px-4 h-60 my-8 gap-4">
-            <>
-              <div
-                onClick={(e) => handleRecord(e)}
-                className={`flex items-center justify-center rounded-full transition-all duration-500 ease-in-out ${
-                  recordStatus === "recording"
-                    ? "bg-red-100 hover:bg-red-200 animate-pulse"
-                    : "bg-green-100 hover:bg-green-200"
-                }`}
-              >
-                <RiMicFill
-                  className={`h-20 w-20 m-8 ${
-                    recordStatus === "recording"
-                      ? "fill-red-300"
-                      : "fill-green-300"
-                  }`}
-                />
-              </div>
-              {recordStatus === "recording" && (
-                <h1 className="text-slate-400 tracking-widest font-semibold animate-pulse">
-                  Listening...
-                </h1>
-              )}
-            </>
-          </div>
-        </Modal>
+        <AudioDialogue
+          isAudioDialogueOpen={isAudioDialogueOpen}
+          setIsAudioDialogueOpen={setIsAudioDialogueOpen}
+        />
       )}
     </div>
   );
