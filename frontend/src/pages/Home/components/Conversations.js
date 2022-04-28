@@ -14,8 +14,8 @@ const Conversations = ({
   setCurrentConversation,
   isStoriesOpened,
   setIsStoriesOpened,
+  
 }) => {
-  const groupConversations = [];
   const { socket, isChatConversationsLoading, chatConversations } =
     useContext(AppContext);
   const { user } = useSelector((state) => state.auth);

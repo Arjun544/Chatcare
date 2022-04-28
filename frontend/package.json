@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@nextui-org/react": "^1.0.8-beta.5",
+    "@nextui-org/react": "^1.0.0-beta.6",
     "@reduxjs/toolkit": "^1.8.1",
     "@tailwindcss/line-clamp": "^0.3.1",
     "@testing-library/jest-dom": "^5.16.4",
@@ -26,6 +26,7 @@
     "react-spinners-kit": "^1.9.1",
     "redux": "^4.1.2",
     "socket.io-client": "^4.4.1",
+    "use-file-picker": "^1.4.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

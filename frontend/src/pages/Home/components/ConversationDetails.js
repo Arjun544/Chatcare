@@ -1,15 +1,21 @@
-import React, { useContext, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import User from "@nextui-org/react/user";
 import Lottie from "lottie-react";
 import newMessage from "../../../assets/new-message.json";
-import { IoIosVideocam, IoIosSend } from "react-icons/io";
+import { IoIosVideocam } from "react-icons/io";
+import { TiArrowSortedDown } from "react-icons/ti";
+
 import {
   RiPhoneFill,
   RiSearch2Fill,
-  RiAttachment2,
-  RiMicFill,
 } from "react-icons/ri";
-import { HiDotsVertical, HiEmojiHappy } from "react-icons/hi";
+
 import profileHolder from "../../../assets/profile_placeholder.png";
 import { StageSpinner } from "react-spinners-kit";
 import MessageTile from "./MessageTile";
@@ -17,8 +23,14 @@ import { sendMessage } from "../../../services/message_services";
 import { useSelector } from "react-redux";
 import { AppContext } from "../../Main";
 import { createConversation } from "../../../services/conversation_services";
+import Tooltip from "@nextui-org/react/tooltip";
+import MessageInput from "./MessageInput";
 
-const ConversationDetails = ({ conversation }) => {
+const ConversationDetails = ({
+  conversation,
+  isAttachmentsOpen,
+  setIsAttachmentsOpen,
+}) => {
   const { user } = useSelector((state) => state.auth);
   const { chatConversations, chatConversationsRefetch } =
     useContext(AppContext);
@@ -99,21 +111,34 @@ const ConversationDetails = ({ conversation }) => {
               </div>
             </div>
             <div className="flex items-center gap-10">
-              <IoIosVideocam
-                fontSize={24}
-                className="fill-slate-300 hover:fill-black cursor-pointer transition-all duration-700 ease-in-out"
-              />
-              <RiPhoneFill
-                fontSize={22}
-                className="fill-slate-300 hover:fill-black cursor-pointer transition-all duration-700 ease-in-out"
-              />
-              <RiSearch2Fill
-                fontSize={22}
-                className="fill-slate-300 hover:fill-black cursor-pointer transition-all duration-700 ease-in-out"
-              />
-              <HiDotsVertical
-                fontSize={22}
-                className="fill-slate-300 hover:fill-black cursor-pointer transition-all duration-700 ease-in-out"
+              <Tooltip content="Video call" color="invert" placement="bottom">
+                <IoIosVideocam
+                  fontSize={24}
+                  className="fill-slate-300 hover:fill-black cursor-pointer transition-all duration-700 ease-in-out"
+                />
+              </Tooltip>
+              <Tooltip content="Audio call" color="invert" placement="bottom">
+                <RiPhoneFill
+                  fontSize={22}
+                  className="fill-slate-300 hover:fill-black cursor-pointer transition-all duration-700 ease-in-out"
+                />
+              </Tooltip>
+              <Tooltip
+                content="Search conversation"
+                color="invert"
+                placement="bottom"
+              >
+                <RiSearch2Fill
+                  fontSize={22}
+                  className="fill-slate-300 hover:fill-black cursor-pointer transition-all duration-700 ease-in-out"
+                />
+              </Tooltip>
+              <TiArrowSortedDown
+                onClick={(e) => setIsAttachmentsOpen(!isAttachmentsOpen)}
+                fontSize={25}
+                className={`fill-slate-300 hover:fill-black cursor-pointer transition-all duration-700 ease-in-out ${
+                  isAttachmentsOpen ? "-rotate-90" : "rotate-90"
+                }`}
               />
             </div>
           </div>
@@ -154,42 +179,7 @@ const ConversationDetails = ({ conversation }) => {
             )}
           </div>
           {/* Typing Input */}
-          <div className="flex items-center w-full h-20 justify-between bg-white shadow-sm px-8">
-            <RiAttachment2
-              fontSize={35}
-              className="bg-blue-200 py-2 px-2 rounded-full hover:bg-blue-300 cursor-pointer transition-all duration-700 ease-in-out"
-            />
-            <form
-              action="submit"
-              onSubmit={(e) => handleSendMessage(e)}
-              className="flex w-full"
-            >
-              <input
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                type="text"
-                required
-                placeholder="Type a new message..."
-                className="flex flex-grow mx-6 placeholder:text-sm text-sm tracking-wider font-medium text-black"
-              />
-              <div className="flex items-center gap-10">
-                <HiEmojiHappy
-                  fontSize={22}
-                  className="fill-slate-300 hover:fill-black cursor-pointer transition-all duration-700 ease-in-out"
-                />
-                <RiMicFill
-                  fontSize={22}
-                  className="fill-slate-300 hover:fill-black cursor-pointer transition-all duration-700 ease-in-out"
-                />
-                <button type="submit">
-                  <IoIosSend
-                    fontSize={35}
-                    className="bg-green-400 py-2 px-2 rounded-full hover:bg-green-500 cursor-pointer transition-all duration-700 ease-in-out"
-                  />
-                </button>
-              </div>
-            </form>
-          </div>
+          <MessageInput text={text} setText={setText} sendMessage={handleSendMessage} />
         </div>
       )}
     </>

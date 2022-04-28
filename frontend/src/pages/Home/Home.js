@@ -57,6 +57,7 @@ const Home = () => {
   const { currentConversation, setCurrentConversation } =
     useContext(AppContext);
   const [isStoriesOpened, setIsStoriesOpened] = useState(false);
+  const [isAttachmentsOpen, setIsAttachmentsOpen] = useState(true);
   const dispatch = useDispatch();
 
   const handleLogout = async (e) => {
@@ -87,9 +88,16 @@ const Home = () => {
           )} */}
           {/* Conversation Details */}
 
-          <ConversationDetails conversation={currentConversation} />
+          <ConversationDetails
+            conversation={currentConversation}
+            isAttachmentsOpen={isAttachmentsOpen}
+            setIsAttachmentsOpen={setIsAttachmentsOpen}
+          />
         </div>
-        <ConversationAttachments conversation={currentConversation} />
+
+        {currentConversation && isAttachmentsOpen && (
+          <ConversationAttachments conversation={currentConversation} />
+        )}
       </div>
     </div>
   );

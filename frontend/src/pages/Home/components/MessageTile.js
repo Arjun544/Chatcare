@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { HiDotsVertical, HiEmojiHappy } from "react-icons/hi";
 import { AiFillStar } from "react-icons/ai";
+import { IoMdTrash } from "react-icons/io";
+import { MdReply } from "react-icons/md";
 import "emoji-mart/css/emoji-mart.css";
 import { Emoji, Picker } from "emoji-mart";
 import { Modal } from "@nextui-org/react";
@@ -8,6 +10,7 @@ import User from "@nextui-org/react/user";
 import profileHolder from "../../../assets/profile_placeholder.png";
 import { useSelector } from "react-redux";
 import Moment from "react-moment";
+import { Popover } from "@nextui-org/react";
 
 const MessageTile = ({ message }) => {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -39,10 +42,30 @@ const MessageTile = ({ message }) => {
               >
                 {message.createdAt}
               </Moment>
-              <HiDotsVertical
-                fontSize={18}
-                className="fill-slate-300 hover:fill-black cursor-pointer"
-              />
+              <Popover placement="left-top" triggerType="listbox">
+                <Popover.Trigger>
+                  <i>
+                    <HiDotsVertical
+                      fontSize={20}
+                      className=" fill-slate-300 hover:fill-black cursor-pointer"
+                    />
+                  </i>
+                </Popover.Trigger>
+                <Popover.Content className="flex flex-col p-4 gap-2">
+                  <div className="flex items-center gap-2 cursor-pointer hover:text-red-400">
+                    <IoMdTrash size={19} />
+                    <h1 className="text-black tracking-wider text-sm hover:text-red-400">
+                      Remove
+                    </h1>
+                  </div>
+                  <div className="flex items-center gap-2 cursor-pointer hover:text-sky-400">
+                    <MdReply size={19} />
+                    <h1 className="text-black tracking-wider text-sm hover:text-sky-400">
+                      Reply
+                    </h1>
+                  </div>
+                </Popover.Content>
+              </Popover>
               <AiFillStar
                 onClick={(e) => setIsEmojiHovered(!isEmojiHovered)}
                 fontSize={20}
