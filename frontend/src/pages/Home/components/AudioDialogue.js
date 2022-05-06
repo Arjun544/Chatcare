@@ -1,14 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Modal } from "@nextui-org/react";
 import { RiMicFill } from "react-icons/ri";
 import PermissionDialogue from "../../../components/PermissionDialogue.";
+import MicRecorder from "mic-recorder-to-mp3";
 
 const AudioDialogue = ({ isAudioDialogueOpen, setIsAudioDialogueOpen }) => {
+  const [hasAudioInput, setHasAudioInput] = useState(false);
   const [hasAudioPermission, setHasAudioPermission] = useState(false);
   const [recordStatus, setRecordStatus] = useState("idle");
-  // const Mp3Recorder = MicRecorder({ bitRate: 128 });
+  const recorder = useRef(null);
+  const audioPlayer = useRef(null);
+  const timer = useRef(null);
+  const time = useRef(0);
+  const displayTime = useRef(null);
+  const [blobURL, setBlobUrl] = useState(null);
+  const [play, setPlay] = useState(false);
 
+  
   useEffect(() => {
+    // Check if any audio input is available
+    function detectAudioDevice(callback) {
+      let md = navigator.mediaDevices;
+      if (!md || !md.enumerateDevices) return callback(false);
+      md.enumerateDevices().then((devices) => {
+        callback(devices.some((device) => "audioinput" === device.kind));
+      });
+    }
+    detectAudioDevice(function (hasWebcam) {
+      hasWebcam ? setHasAudioInput(true) : setHasAudioInput(false);
+    });
+
+    // Audio permission
     navigator.getUserMedia(
       { audio: true },
       () => {
@@ -17,20 +39,63 @@ const AudioDialogue = ({ isAudioDialogueOpen, setIsAudioDialogueOpen }) => {
       },
       () => {
         console.log("Permission Denied");
-        hasAudioPermission(false);
+        setHasAudioPermission(false);
       }
     );
   }, []);
+
+  useEffect(() => {
+    recorder.current = new MicRecorder({ bitRate: 128 });
+  }, []);
+
+  const startRecording = () => {
+    recorder.current.start().then(() => {
+      setRecordStatus("recording");
+    });
+  };
+
+  const startTimer = () => {
+    time.current = 0;
+    timer.current = setInterval(() => {
+      time.current = time.current + 1;
+      displayTime.current.innerText = time.current;
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    clearInterval(timer.current);
+  };
+
+  const setTime = () => {
+    if (audioPlayer.current) {
+      displayTime.current.innerText = Math.floor(audioPlayer.current.duration);
+    }
+  };
+
+  const stopRecording = () => {
+    recorder.current
+      .stop()
+      .getMp3()
+      .then(([buffer, blob]) => {
+        const newBlobUrl = URL.createObjectURL(blob);
+        setBlobUrl(newBlobUrl);
+        setRecordStatus("stop");
+      })
+      .catch((e) => console.log(e));
+  };
 
   const handleRecord = (e) => {
     e.preventDefault();
     switch (recordStatus) {
       case "idle":
         setRecordStatus("recording");
-
+        startRecording();
+        startTimer();
         break;
       case "recording":
         setRecordStatus("stop");
+        stopRecording();
+        stopTimer();
         break;
       case "stop":
         setRecordStatus("recording");
@@ -39,6 +104,17 @@ const AudioDialogue = ({ isAudioDialogueOpen, setIsAudioDialogueOpen }) => {
         break;
     }
   };
+
+   if (!hasAudioInput) {
+     return (
+       <PermissionDialogue
+         message="No audio input device detected. Please check your device settings."
+         isAudioDialogueOpen={isAudioDialogueOpen}
+         setIsAudioDialogueOpen={setIsAudioDialogueOpen}
+       />
+     );
+   }
+
 
   if (!hasAudioPermission) {
     return (
@@ -98,9 +174,11 @@ const AudioDialogue = ({ isAudioDialogueOpen, setIsAudioDialogueOpen }) => {
         ) : (
           <div className="flex flex-col items-center w-1/2 h-fit gap-20">
             <audio
-              src="https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3?_=1"
+              src={blobURL}
               autoPlay
               controls
+              onLoadedMetadata={setTime}
+              onTimeUpdate={setTime}
               className="w-full h-10 bg-white"
             ></audio>
             <div className="flex justify-center items-center w-full gap-4">

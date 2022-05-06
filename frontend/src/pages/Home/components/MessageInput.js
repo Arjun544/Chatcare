@@ -1,111 +1,104 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Popover } from "@nextui-org/react";
 import { Picker } from "emoji-mart";
-import { useFilePicker } from "use-file-picker";
-import { BsFillFileEarmarkFill } from "react-icons/bs";
 import { IoIosSend } from "react-icons/io";
-import { RiAttachment2, RiMicFill } from "react-icons/ri";
-import { MdOutlineClose } from "react-icons/md";
-import { BiImageAdd } from "react-icons/bi";
+import { SiAddthis } from "react-icons/si";
+import { RiAttachment2, RiMicFill, RiCloseFill } from "react-icons/ri";
 import Tooltip from "@nextui-org/react/tooltip";
 import { HiEmojiHappy } from "react-icons/hi";
 import AudioDialogue from "./AudioDialogue";
 
 const MessageInput = ({ text, setText, sendMessage }) => {
   const [files, setFiles] = useState([]);
+  const [isAttachmentsOpen, setIsAttachmentsOpen] = useState(false);
   const [isAudioDialogueOpen, setIsAudioDialogueOpen] = useState(false);
-  const [openFileSelector, { filesContent, clear }] = useFilePicker({
-    multiple: true,
-    readAs: "DataURL",
-    accept: [
-      ".json",
-      ".pdf",
-      ".png",
-      ".jpg",
-      ".jpeg",
-      ".docx",
-      ".doc",
-      ".xlsx",
-      ".xls",
-      ".ppt",
-      ".pptx",
-      ".txt",
-      ".csv",
-      ".mp4",
-      ".mp3",
-      ".zip",
-      ".rar",
-    ],
-    // limitFilesConfig: { min: 2, max: 3 },
-    // minFileSize: 1, // in megabytes
-    // maxFileSize: 1,
-    // readFilesContent: false, // ignores file content
-  });
 
-  useEffect(() => {
-    setFiles([...files, ...filesContent]);
-  }, [filesContent]);
-
-  const removeFile = (e, file) => {
+  const handleRemoveFile = (e, file) => {
     e.preventDefault();
-    setFiles(files.filter((f) => f !== file));
+    setFiles(files.filter((item) => item !== file));
   };
 
   return (
     <div
-      className={`flex w-full bg-white shadow-sm px-8 ${
-        files.length > 0
-          ? "h-36 flex flex-col"
+      className={`flex w-full bg-white shadow-sm px-8 transition-all duration-500 ease-in-out ${
+        isAttachmentsOpen
+          ? "h-fit flex flex-col"
           : "flex items-center justify-between h-20"
       }`}
     >
-      {files.length > 0 && (
-        <div className="flex flex-wrap items-center w-full h-fit px-3 bg-slate-300 rounded-2xl my-3">
-          {files.map((file) => (
-            <div className="relative">
-              {file.name.split(".")[1] === "jpg" ||
-              file.name.split(".")[1] === "png" ||
-              file.name.split(".")[1] === "jpeg" ? (
-                <img src={file.content} alt="preview" className="h-11 w-14" />
-              ) : (
-                <div className="flex items-center gap-2 w-fit bg-white h-10 mr-4 px-4 my-3 rounded-xl">
-                  <BsFillFileEarmarkFill />
-                  <h1 className="text-xs font-semibold tracking-wider">
+      {isAttachmentsOpen && (
+        <div className="flex flex-row flex-wrap w-fit h-40 bg-white overflow-auto">
+          {files.length > 0 &&
+            files.map((file, index) => (
+              <div className="flex relative mr-4 my-3">
+                {file.name.split(".")[1] === "jpg" ||
+                file.name.split(".")[1] === "png" ||
+                file.name.split(".")[1] === "jpeg" ? (
+                  <img
+                    key={index}
+                    src={URL.createObjectURL(file)}
+                    alt={file.name}
+                    className="h-12 w-12 object-cover rounded-xl "
+                  />
+                ) : (
+                  <div
+                    key={index}
+                    className="flex items-center justify-center rounded-xl bg-slate-300 p-2 px-4 h-12 text-xs font-semibold tracking-wider"
+                  >
                     {file.name}
-                  </h1>
+                  </div>
+                )}
+                <div
+                  onClick={(e) => handleRemoveFile(e, file)}
+                  className={`absolute z-50 -top-2 flex h-5 w-5 rounded-full bg-white hover:bg-slate-200 cursor-pointer items-center justify-center ${
+                    file.name.split(".")[1] === "jpg" ||
+                    file.name.split(".")[1] === "png" ||
+                    file.name.split(".")[1] === "jpeg"
+                      ? "right-0"
+                      : "right-0"
+                  }`}
+                >
+                  <RiCloseFill />
                 </div>
-              )}
-              <div
-                onClick={(e) => removeFile(e, file)}
-                className={`absolute flex items-center justify-center w-5 h-5 rounded-full cursor-pointer bg-red-100 hover:bg-red-200 ${
-                  file.name.split(".")[1] === "jpg" ||
-                  file.name.split(".")[1] === "png" ||
-                  file.name.split(".")[1] === "jpeg"
-                    ? "-right-1 -top-1"
-                    : "right-3 top-1"
-                }`}
-              >
-                <MdOutlineClose />
               </div>
-            </div>
-          ))}
-          <div
-            onClick={(e) => openFileSelector()}
-            className="flex items-center justify-center h-11 w-11 ml-6 rounded-xl bg-slate-400 cursor-pointer hover:bg-slate-500"
-          >
-            <BiImageAdd size={24} fill="#fff" />
+            ))}
+
+          <div className="flex relative items-center justify-center h-12 w-12 my-3 rounded-xl bg-slate-200 cursor-pointer hover:bg-slate-300 transition-all duration-500 ease-in-out">
+            <input
+              type="file"
+              name="file"
+              multiple
+              accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+              className="h-full w-full opacity-0 cursor-pointer"
+              onChange={(e) =>
+                setFiles((newFiles) => [...newFiles, ...e.target.files])
+              }
+            />
+            <SiAddthis
+              // onClick={(e) => e.target.previousSibling.click()}
+              fontSize={22}
+              className="absolute z-50 pointer-events-none cursor-pointer"
+            />
           </div>
+          {files.length > 0 && (
+            <div
+              onClick={(e) => setFiles([])}
+              className="flex relative items-center justify-center h-12 w-12 ml-4 my-3 rounded-xl bg-red-200 cursor-pointer hover:bg-red-300 transition-all duration-500 ease-in-out"
+            >
+              <RiCloseFill fontSize={22} />
+            </div>
+          )}
         </div>
       )}
 
       <form
         action="submit"
         onSubmit={(e) => sendMessage(e)}
-        className="flex w-full"
+        className="flex w-full mb-3"
       >
         <Tooltip content="Select attachment" color="invert" placement="top">
           <RiAttachment2
-            onClick={(e) => openFileSelector()}
+            onClick={(e) => setIsAttachmentsOpen(!isAttachmentsOpen)}
             fontSize={35}
             className="bg-blue-200 py-2 px-2 rounded-full hover:bg-blue-300 cursor-pointer transition-all duration-700 ease-in-out"
           />

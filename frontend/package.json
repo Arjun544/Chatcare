@@ -27,7 +27,6 @@
     "react-spinners-kit": "^1.9.1",
     "redux": "^4.1.2",
     "socket.io-client": "^4.4.1",
-    "use-file-picker": "^1.4.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
