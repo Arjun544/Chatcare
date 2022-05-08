@@ -1,18 +1,10 @@
-import React, {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useLayoutEffect, useRef, useState } from "react";
 import User from "@nextui-org/react/user";
 import Lottie from "lottie-react";
 import newMessage from "../../../assets/new-message.json";
 import { IoIosVideocam } from "react-icons/io";
 import { TiArrowSortedDown } from "react-icons/ti";
-
 import { RiPhoneFill, RiSearch2Fill } from "react-icons/ri";
-
 import profileHolder from "../../../assets/profile_placeholder.png";
 import { StageSpinner } from "react-spinners-kit";
 import MessageTile from "./MessageTile";
@@ -25,7 +17,6 @@ import {
 } from "../../../services/conversation_services";
 import Tooltip from "@nextui-org/react/tooltip";
 import MessageInput from "./MessageInput";
-import { getBase64 } from "../../../helpers/getBase64";
 import toast from "react-hot-toast";
 import { useQuery } from "react-query";
 import MessagesLoader from "../../../loaders/MessagesLoader";
@@ -189,9 +180,14 @@ const ConversationDetails = ({
           </div>
         ) : (
           <div>
-           { messages && messages.map((message, index) => (
-            <MessageTile key={index} message={message} conversationId={conversation.id} />
-            ))}
+            {messages &&
+              messages.map((message, index) => (
+                <MessageTile
+                  key={index}
+                  message={message}
+                  conversationId={conversation.id}
+                />
+              ))}
             {isTyping && (
               <div className="flex items-center justify-center gap-2 mt-6">
                 <h1 className="text-slate-400 tracking-wider text-sm">
