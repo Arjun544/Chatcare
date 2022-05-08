@@ -88,11 +88,26 @@ const Home = () => {
           )} */}
           {/* Conversation Details */}
 
-          <ConversationDetails
-            conversation={currentConversation}
-            isAttachmentsOpen={isAttachmentsOpen}
-            setIsAttachmentsOpen={setIsAttachmentsOpen}
-          />
+          {currentConversation ? (
+            <ConversationDetails
+              conversation={currentConversation}
+              isAttachmentsOpen={isAttachmentsOpen}
+              setIsAttachmentsOpen={setIsAttachmentsOpen}
+            />
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center">
+              <div className="flex h-60 w-60 items-center justify-center">
+                <Lottie
+                  animationData={newMessage}
+                  autoPlay={true}
+                  loop={true}
+                />
+              </div>
+              <span className="tracking-wider text-slate-400">
+                Select a conversation
+              </span>
+            </div>
+          )}
         </div>
 
         {currentConversation && isAttachmentsOpen && (

@@ -9,8 +9,14 @@ const api = axios.create({
   },
 });
 
-export const createConversation = async (byId, toId, message) =>
-  await api.post("/conversation/create", { byId, toId, message });
+export const createConversation = async (byId, toId, message, attachments) =>
+  await api.post("/conversation/create", { byId, toId, message, attachments });
 
 export const getConversations = async (userId) =>
   await api.get(`/conversation/get/${userId}`);
+
+export const getConversationMessages = async (conversationId) =>
+  await api.get(`/conversation/messages/${conversationId}`);
+
+export const getConversationImages = async (conversationId) =>
+  await api.get(`/conversation/images/${conversationId}`);

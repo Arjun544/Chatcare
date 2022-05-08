@@ -9,9 +9,16 @@ const api = axios.create({
   },
 });
 
-export const sendMessage = async (text, receiverId, senderId, conversationId) =>
+export const sendMessage = async (
+  text,
+  attachments,
+  receiverId,
+  senderId,
+  conversationId
+) =>
   await api.post("/message/send", {
     text,
+    attachments,
     receiverId,
     senderId,
     conversationId,

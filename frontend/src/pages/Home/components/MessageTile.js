@@ -3,6 +3,7 @@ import { HiDotsVertical, HiEmojiHappy } from "react-icons/hi";
 import { AiFillStar } from "react-icons/ai";
 import { IoMdTrash } from "react-icons/io";
 import { MdReply } from "react-icons/md";
+import { BsFileEarmarkMedicalFill } from "react-icons/bs";
 import "emoji-mart/css/emoji-mart.css";
 import { Emoji, Picker } from "emoji-mart";
 import { Modal } from "@nextui-org/react";
@@ -11,13 +12,15 @@ import profileHolder from "../../../assets/profile_placeholder.png";
 import { useSelector } from "react-redux";
 import Moment from "react-moment";
 import { Popover } from "@nextui-org/react";
+import FullImageView from "./FullImageView";
 
-const MessageTile = ({ message }) => {
+const MessageTile = ({ message, conversationId }) => {
   const { user: currentUser } = useSelector((state) => state.auth);
   const [isMsgHovered, setIsMsgHovered] = useState(false);
   const [isEmojiHovered, setIsEmojiHovered] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [isShowingEmojis, setIsShowingEmojis] = useState(false);
+  const [isImageClicked, setIsImageClicked] = useState(false);
 
   return (
     <div
@@ -93,10 +96,48 @@ const MessageTile = ({ message }) => {
               )}
             </div>
           )}
-          <div className="bg-blue-300 flex items-center max-w-xl py-2 w-fit px-4 rounded-t-xl rounded-bl-xl mr-8">
-            <h1 className=" text-black tracking-wider text-sm">
-              {message.text}
-            </h1>
+          <div className="bg-blue-300 flex flex-col items-start max-w-xl py-2 w-fit px-4 rounded-t-xl rounded-bl-xl mr-8">
+            {message.attachments.length > 0 && (
+              <div className="flex items-center gap-4">
+                {message.attachments.map((attachment) =>
+                  attachment.type === "jpg" ||
+                  attachment.type === "png" ||
+                  attachment.type === "jpeg" ? (
+                    <>
+                      {/* Full Message Image view */}
+                      <FullImageView
+                        image={attachment}
+                        isImageClicked={isImageClicked}
+                        setIsImageClicked={setIsImageClicked}
+                      />
+                      <img
+                        onClick={(e) => setIsImageClicked(true)}
+                        key={attachment.id}
+                        src={attachment.url}
+                        className="w-32 h-32 object-cover rounded-xl cursor-pointer bg-blue-200 hover:scale-95 transition-all duration-400 ease-in-out"
+                      />
+                    </>
+                  ) : (
+                    <div
+                      key={attachment.id}
+                      className="flex items-center justify-center rounded-xl gap-2 bg-slate-300 p-2 px-4 h-12 text-xs font-semibold tracking-wider cursor-pointer hover:scale-95 transition-all duration-400 ease-in-out"
+                    >
+                      <BsFileEarmarkMedicalFill size={19} />
+                      {attachment.name}
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+            {message.text && (
+              <h1
+                className={`text-black tracking-wider text-sm ${
+                  message.attachments.length > 0 && "mt-2"
+                }`}
+              >
+                {message.text}
+              </h1>
+            )}
           </div>
           {selectedEmoji !== null && (
             <div
@@ -116,10 +157,36 @@ const MessageTile = ({ message }) => {
           }}
           className="relative flex items-center gap-3"
         >
-          <div className="bg-slate-300 flex items-center max-w-xl py-2 w-fit px-4 rounded-t-xl rounded-br-xl ml-8">
-            <h1 className="text-black tracking-wider text-sm">
-              {message.text}
-            </h1>
+          <div className="bg-slate-300 flex flex-col items-start gap-2 max-w-xl py-2 w-fit px-4 rounded-t-xl rounded-br-xl ml-8">
+            {message.attachments.length > 0 && (
+              <div className="flex items-center gap-2">
+                {message.attachments.map((attachment) =>
+                  attachment.type === "jpg" ||
+                  attachment.type === "png" ||
+                  attachment.type === "jpeg" ? (
+                    <img
+                      onClick={(e) => setIsImageClicked(true)}
+                      key={attachment.id}
+                      src={attachment.url}
+                      className="w-32 h-32 object-cover rounded-xl cursor-pointer hover:scale-95 transition-all duration-400 ease-in-out"
+                    />
+                  ) : (
+                    <div
+                      key={attachment.id}
+                      className="flex items-center justify-center rounded-xl gap-2 bg-slate-300 p-2 px-4 h-12 text-xs font-semibold tracking-wider cursor-pointer hover:scale-95 transition-all duration-400 ease-in-out"
+                    >
+                      <BsFileEarmarkMedicalFill size={19} />
+                      {attachment.name}
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+            {message.text && (
+              <h1 className=" text-black tracking-wider text-sm mt-2">
+                {message.text}
+              </h1>
+            )}
             {selectedEmoji !== null && (
               <div
                 onClick={(e) => setIsShowingEmojis(true)}

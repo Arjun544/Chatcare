@@ -175,12 +175,21 @@ const Conversations = ({
                         <div className="flex items-center gap-2">
                           {conversation.isRead ? <MdDoneAll /> : <MdDone />}
                           <p className="text-black tracking-wider text-sm w-32 line-clamp-1 text-ellipsis">
-                            {
-                              conversation.messages[
-                                conversation.messages.length - 1
-                              ].text
-                            }{" "}
-                            dfsdfsds dfs dfs dsd s
+                            {conversation.messages[
+                              conversation.messages.length - 1
+                            ].text === ""
+                              ? conversation.messages[
+                                  conversation.messages.length - 1
+                                ].senderId === user.id
+                                ? "you sent an attachment"
+                                : `${
+                                    conversation.members.find(
+                                      (member) => member.id !== user.id
+                                    ).username
+                                  } sent an attachment`
+                              : conversation.messages[
+                                  conversation.messages.length - 1
+                                ].text}
                           </p>
                         </div>
                       </div>

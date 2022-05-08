@@ -61,8 +61,8 @@ const Main = () => {
       refetchOnMount: true,
       refetchOnWindowFocus: false,
     }
-  );
-
+    );
+console.log(chatConversations);
   return (
     <AppContext.Provider
       value={{

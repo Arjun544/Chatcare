@@ -7,9 +7,9 @@ import { RiAttachment2, RiMicFill, RiCloseFill } from "react-icons/ri";
 import Tooltip from "@nextui-org/react/tooltip";
 import { HiEmojiHappy } from "react-icons/hi";
 import AudioDialogue from "./AudioDialogue";
+import FileBase64 from "react-file-base64";
 
-const MessageInput = ({ text, setText, sendMessage }) => {
-  const [files, setFiles] = useState([]);
+const MessageInput = ({ text, setText, sendMessage, files, setFiles }) => {
   const [isAttachmentsOpen, setIsAttachmentsOpen] = useState(false);
   const [isAudioDialogueOpen, setIsAudioDialogueOpen] = useState(false);
 
@@ -30,13 +30,12 @@ const MessageInput = ({ text, setText, sendMessage }) => {
         <div className="flex flex-row flex-wrap w-fit h-40 bg-white overflow-auto">
           {files.length > 0 &&
             files.map((file, index) => (
-              <div className="flex relative mr-4 my-3">
+              <div key={index} className="flex relative mr-4 my-3">
                 {file.name.split(".")[1] === "jpg" ||
                 file.name.split(".")[1] === "png" ||
                 file.name.split(".")[1] === "jpeg" ? (
                   <img
-                    key={index}
-                    src={URL.createObjectURL(file)}
+                    src={URL.createObjectURL(file.file)}
                     alt={file.name}
                     className="h-12 w-12 object-cover rounded-xl "
                   />
@@ -63,21 +62,19 @@ const MessageInput = ({ text, setText, sendMessage }) => {
               </div>
             ))}
 
-          <div className="flex relative items-center justify-center h-12 w-12 my-3 rounded-xl bg-slate-200 cursor-pointer hover:bg-slate-300 transition-all duration-500 ease-in-out">
-            <input
-              type="file"
-              name="file"
-              multiple
-              accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-              className="h-full w-full opacity-0 cursor-pointer"
-              onChange={(e) =>
-                setFiles((newFiles) => [...newFiles, ...e.target.files])
-              }
-            />
+          <div className="flex relative items-center justify-center h-12 w-12 my-3 cursor-pointer rounded-xl bg-slate-200 hover:bg-slate-300 transition-all duration-500 ease-in-out">
+            <div className="flex items-center justify-center h-full w-full opacity-0 cursor-pointer overflow-hidden">
+              <FileBase64
+                multiple
+                accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                onDone={(files) =>
+                  setFiles((newFiles) => [...newFiles, ...files])
+                }
+              />
+            </div>
             <SiAddthis
-              // onClick={(e) => e.target.previousSibling.click()}
               fontSize={22}
-              className="absolute z-50 pointer-events-none cursor-pointer"
+              className="absolute z-0 cursor-pointer pointer-events-none"
             />
           </div>
           {files.length > 0 && (
@@ -107,7 +104,7 @@ const MessageInput = ({ text, setText, sendMessage }) => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           type="text"
-          required
+          required={files.length > 0 ? false : true}
           placeholder="Type a new message..."
           className="flex flex-grow mx-6 placeholder:text-sm text-sm tracking-wider font-medium text-black"
         />
