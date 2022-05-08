@@ -20,6 +20,7 @@ import MessageInput from "./MessageInput";
 import toast from "react-hot-toast";
 import { useQuery } from "react-query";
 import MessagesLoader from "../../../loaders/MessagesLoader";
+import { customToast } from "../../../helpers/customToast";
 
 const ConversationDetails = ({
   conversation,
@@ -68,6 +69,38 @@ const ConversationDetails = ({
   const handleSendMessage = async (e) => {
     e.preventDefault();
     try {
+      // Image size is limited to 5MB
+      if (
+        files
+          .filter((item) => item.type.includes("image"))
+
+          .some((file) => file.size.split(" ")[0] > 5000 && !user.isPremium)
+      ) {
+        return customToast("Image size limit exceeded", () => {
+          console.log("test");
+        });
+      }
+      // pdf size is limited to 5MB
+      else if (
+        files
+          .filter((item) => item.type.includes("pdf"))
+          .some((file) => file.size.split(" ")[0] > 5000 && !user.isPremium)
+      ) {
+        return customToast("Pdf size limit exceeded", () => {
+          console.log("test");
+        });
+      }
+      // pdf size is limited to 5MB
+      else if (
+        files
+          .filter((item) => item.type.includes("video"))
+          .some((file) => file.size.split(" ")[0] > 100000 && !user.isPremium)
+      ) {
+        return customToast("Video size limit exceeded", () => {
+          console.log("test");
+        });
+      }
+
       const receiverId = conversation.members.find(
         (member) => member.id !== user.id
       ).id;
@@ -90,6 +123,7 @@ const ConversationDetails = ({
       setFiles([]);
       scrollToBottom();
     } catch (error) {
+      console.log(error);
       toast.error("Something went wrong");
     }
   };

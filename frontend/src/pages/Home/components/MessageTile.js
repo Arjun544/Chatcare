@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { HiDotsVertical, HiEmojiHappy } from "react-icons/hi";
 import { AiFillStar } from "react-icons/ai";
 import { IoMdTrash } from "react-icons/io";
-import { MdReply } from "react-icons/md";
+import { MdAudiotrack, MdReply, MdVideoLibrary } from "react-icons/md";
 import { BsFileEarmarkMedicalFill } from "react-icons/bs";
 import "emoji-mart/css/emoji-mart.css";
 import { Emoji, Picker } from "emoji-mart";
@@ -103,7 +103,7 @@ const MessageTile = ({ message, conversationId }) => {
                   attachment.type === "jpg" ||
                   attachment.type === "png" ||
                   attachment.type === "jpeg" ? (
-                    <>
+                    <div key={attachment.id}>
                       {/* Full Message Image view */}
                       <FullImageView
                         image={attachment}
@@ -112,19 +112,50 @@ const MessageTile = ({ message, conversationId }) => {
                       />
                       <img
                         onClick={(e) => setIsImageClicked(true)}
-                        key={attachment.id}
                         src={attachment.url}
                         className="w-32 h-32 object-cover rounded-xl cursor-pointer bg-blue-200 hover:scale-95 transition-all duration-400 ease-in-out"
                       />
-                    </>
-                  ) : (
+                    </div>
+                  ) : attachment.type === "mp4" ||
+                    attachment.type === "mkv" ||
+                    attachment.type === "mov" ||
+                    attachment.type === "wmv" ||
+                    attachment.type === "flv" ||
+                    attachment.type === "avi" ||
+                    attachment.type === "webm" ||
+                    attachment.type === "AVCHD" ? (
                     <div
                       key={attachment.id}
                       className="flex items-center justify-center rounded-xl gap-2 bg-slate-300 p-2 px-4 h-12 text-xs font-semibold tracking-wider cursor-pointer hover:scale-95 transition-all duration-400 ease-in-out"
                     >
-                      <BsFileEarmarkMedicalFill size={19} />
+                      <MdVideoLibrary size={19} />
                       {attachment.name}
                     </div>
+                  ) : attachment.type === "mp3" ||
+                    attachment.type === "pcm" ||
+                    attachment.type === "wav" ||
+                    attachment.type === "aiff" ||
+                    attachment.type === "acc" ? (
+                    <div
+                      key={attachment.id}
+                      className="flex items-center justify-center rounded-xl gap-2 bg-slate-300 p-2 px-4 h-12 text-xs font-semibold tracking-wider cursor-pointer hover:scale-95 transition-all duration-400 ease-in-out"
+                    >
+                      <MdAudiotrack size={19} />
+                      {attachment.name}
+                    </div>
+                  ) : (
+                    <a
+                      key={attachment.id}
+                      href={
+                        attachment.type === "pdf" ? attachment.url : "false"
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center rounded-xl gap-2 bg-slate-300 p-2 px-4 h-12 text-xs font-semibold tracking-wider cursor-pointer hover:scale-95 transition-all duration-400 ease-in-out"
+                    >
+                      <BsFileEarmarkMedicalFill size={19} />
+                      {attachment.name}
+                    </a>
                   )
                 )}
               </div>

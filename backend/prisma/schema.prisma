@@ -19,6 +19,7 @@ model User {
   profileId            String
   location             String
   active               Boolean        @default(false)
+  isPremium            Boolean        @default(false)
   tokens               Token[]
   emailToken           Int
   emailTokenExpires    DateTime
@@ -46,11 +47,11 @@ model Token {
 }
 
 model Conversation {
-  id         Int          @id @default(autoincrement())
-  members    User[]
-  messages   Message[]
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @default(now())
+  id          Int          @id @default(autoincrement())
+  members     User[]
+  messages    Message[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
   attachments Attachment[]
 }
 

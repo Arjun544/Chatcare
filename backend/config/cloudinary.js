@@ -13,8 +13,8 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary.v2,
   params: {
     folder: "Chatcare",
-    format: ["jpg", "png", "pdf", "jpeg"],
     public_id: "Chatcare",
+    resource_type: "raw",
   },
   transformation: [
     {

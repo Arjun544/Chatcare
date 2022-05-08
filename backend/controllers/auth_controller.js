@@ -84,6 +84,7 @@ exports.register = async (req, res) => {
         profile: "",
         profileId: "",
         location: "",
+        isPremium: false,
       },
       include: {
         requests: true,
@@ -119,6 +120,7 @@ exports.register = async (req, res) => {
         location: newUser.location,
         friends: newUser.friends,
         requests: newUser.requests,
+        isPremium: newUser.isPremium,
       },
       isAuth: true,
     });
@@ -189,6 +191,7 @@ exports.activate = async (req, res) => {
           location: newUser.location,
           friends: newUser.friends,
           requests: newUser.requests,
+          isPremium: newUser.isPremium,
         },
         isAuth: true,
       });
@@ -228,6 +231,7 @@ exports.login = async (req, res) => {
         tokens: true,
         friends: true,
         requests: true,
+        isPremium: true,
       },
     });
     if (!user) {
@@ -275,6 +279,7 @@ exports.login = async (req, res) => {
         location: user.location,
         friends: user.friends,
         requests: user.requests,
+        isPremium: user.isPremium,
       },
       isAuth: true,
     });
@@ -391,6 +396,7 @@ exports.sendCode = async (req, res) => {
         location: user.location,
         friends: user.friends,
         requests: user.requests,
+        isPremium: user.isPremium,
       },
       isAuth: true,
     });
@@ -523,6 +529,7 @@ exports.refresh = async (req, res) => {
       location: user.location,
       friends: user.friends,
       requests: user.requests,
+      isPremium: user.isPremium,
     },
     isAuth: true,
   });
@@ -556,6 +563,7 @@ exports.gmailLogin = async (req, res) => {
         location: true,
         friends: true,
         requests: true,
+        isPremium: true,
       },
     });
 
@@ -595,6 +603,7 @@ exports.gmailLogin = async (req, res) => {
         location: user.location,
         friends: user.friends,
         requests: user.requests,
+        isPremium: user.isPremium,
       },
       isAuth: true,
     });
@@ -641,6 +650,7 @@ exports.gmailSignup = async (req, res) => {
         profile: profile,
         profileId: "",
         location: "",
+        isPremium: false,
       },
       include: {
         requests: true,
@@ -677,6 +687,7 @@ exports.gmailSignup = async (req, res) => {
         location: user.location,
         friends: user.friends,
         requests: user.requests,
+        isPremium: user.isPremium,
       },
       isAuth: true,
     });

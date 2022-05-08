@@ -8,7 +8,10 @@ exports.sendMessage = async (req, res) => {
     // Upload files to cloudinary
     let uploadedFiles = [];
     if (attachments.length > 0) {
-      const uploader = async (path) => await cloudinary.uploader.upload(path);
+      const uploader = async (path) =>
+        await cloudinary.v2.uploader.upload_large(path, {
+          resource_type: "raw",
+        });
 
       for (const file of attachments) {
         const newPath = await uploader(file.url);
@@ -16,7 +19,9 @@ exports.sendMessage = async (req, res) => {
           attachmentId: newPath.public_id,
           name: file.name,
           url: newPath.secure_url,
-          type: newPath.format,
+          type:
+            newPath.format ??
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         });
       }
     }
