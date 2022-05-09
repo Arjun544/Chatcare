@@ -7,15 +7,10 @@ exports.createConversation = async (req, res) => {
     let uploadedFiles = [];
     if (attachments.length > 0) {
       const uploader = async (path) =>
-        await cloudinary.uploader.upload(path, {
-          resource_type: attachments.map((item) =>
-            item.type.includes("image")
-              ? "png"
-              : item.type.includes("pdf")
-              ? "pdf"
-              : "video"
-          ),
+        await cloudinary.v2.uploader.upload_large(path, {
+          resource_type: "auto",
         });
+
       for (const file of attachments) {
         const newPath = await uploader(file.url);
         uploadedFiles.push({
@@ -26,6 +21,8 @@ exports.createConversation = async (req, res) => {
             ? "png"
             : file.type.includes("pdf")
             ? "pdf"
+            : file.type.includes("audio")
+            ? "mp3"
             : "video",
         });
       }

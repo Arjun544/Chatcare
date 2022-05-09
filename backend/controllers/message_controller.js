@@ -30,8 +30,6 @@ exports.sendMessage = async (req, res) => {
       }
     }
 
-    console.log(uploadedFiles);
-
     await prisma.message.create({
       data: {
         text,

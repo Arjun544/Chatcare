@@ -115,7 +115,6 @@ const ConversationDetails = ({
         name: file.name,
         type: file.type,
       }));
-      console.log("attachmentsss", attachments);
       if (chatConversations.includes(conversation)) {
         setIsMsgSending(true);
         await sendMessage(
