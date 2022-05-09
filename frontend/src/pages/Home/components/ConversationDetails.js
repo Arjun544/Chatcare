@@ -1,4 +1,10 @@
-import React, { useContext, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import User from "@nextui-org/react/user";
 import Lottie from "lottie-react";
 import newMessage from "../../../assets/new-message.json";
@@ -31,6 +37,7 @@ const ConversationDetails = ({
   const { chatConversations, chatConversationsRefetch } =
     useContext(AppContext);
   const scrollRef = useRef(null);
+  const [isMsgSending, setIsMsgSending] = useState(false);
   const [text, setText] = useState("");
   const [files, setFiles] = useState([]);
   const [isOnline, setIsOnline] = useState(true);
@@ -62,8 +69,8 @@ const ConversationDetails = ({
     scrollRef.current.scrollTo(0, scroll);
   };
 
-  useLayoutEffect(() => {
-    conversation !== null && scrollToBottom();
+  useEffect(() => {
+    scrollToBottom();
   }, [conversation]);
 
   const handleSendMessage = async (e) => {
@@ -73,7 +80,6 @@ const ConversationDetails = ({
       if (
         files
           .filter((item) => item.type.includes("image"))
-
           .some((file) => file.size.split(" ")[0] > 5000 && !user.isPremium)
       ) {
         return customToast("Image size limit exceeded", () => {
@@ -109,20 +115,28 @@ const ConversationDetails = ({
         name: file.name,
         type: file.type,
       }));
-      chatConversations.includes(conversation)
-        ? await sendMessage(
-            text,
-            attachments,
-            receiverId,
-            user.id,
-            conversation.id
-          )
-        : await createConversation(user.id, receiverId, text, attachments);
-      await chatConversationsRefetch();
-      setText("");
-      setFiles([]);
-      scrollToBottom();
+      console.log("attachmentsss", attachments);
+      if (chatConversations.includes(conversation)) {
+        setIsMsgSending(true);
+        await sendMessage(
+          text,
+          attachments,
+          receiverId,
+          user.id,
+          conversation.id
+        );
+        setIsMsgSending(false);
+      } else {
+        setIsMsgSending(true);
+        await createConversation(user.id, receiverId, text, attachments);
+        await chatConversationsRefetch();
+        setIsMsgSending(false);
+        setText("");
+        setFiles([]);
+        scrollToBottom();
+      }
     } catch (error) {
+      setIsMsgSending(false);
       console.log(error);
       toast.error("Something went wrong");
     }
@@ -197,10 +211,8 @@ const ConversationDetails = ({
         </div>
       </div>
       {/* Messages */}
-      <div
-        ref={scrollRef}
-        className="flex flex-col h-full w-full bg-slate-200 py-4 overflow-y-auto"
-      >
+
+      <div className="flex flex-col h-full w-full bg-slate-200 py-4 overflow-y-auto">
         {isMessagesLoading ? (
           <MessagesLoader />
         ) : messages < 1 ? (
@@ -237,6 +249,7 @@ const ConversationDetails = ({
           </div>
         )}
       </div>
+      <div ref={scrollRef} />
       {/* Typing Input */}
       <MessageInput
         text={text}
@@ -244,6 +257,7 @@ const ConversationDetails = ({
         sendMessage={handleSendMessage}
         files={files}
         setFiles={setFiles}
+        isMsgSending={isMsgSending}
       />
     </div>
   );

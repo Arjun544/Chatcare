@@ -5,6 +5,7 @@ import { IoIosSend } from "react-icons/io";
 import { SiAddthis } from "react-icons/si";
 import { RiAttachment2, RiMicFill, RiCloseFill } from "react-icons/ri";
 import Tooltip from "@nextui-org/react/tooltip";
+import { Loading } from "@nextui-org/react";
 import { HiEmojiHappy } from "react-icons/hi";
 import AudioDialogue from "./AudioDialogue";
 import FileBase64 from "react-file-base64";
@@ -12,7 +13,14 @@ import { BsFileEarmarkMedicalFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { MdAudiotrack, MdVideoLibrary } from "react-icons/md";
 
-const MessageInput = ({ text, setText, sendMessage, files, setFiles }) => {
+const MessageInput = ({
+  isMsgSending,
+  text,
+  setText,
+  sendMessage,
+  files,
+  setFiles,
+}) => {
   const { user: currentUser } = useSelector((state) => state.auth);
   const [isAttachmentsOpen, setIsAttachmentsOpen] = useState(false);
   const [isAudioDialogueOpen, setIsAudioDialogueOpen] = useState(false);
@@ -212,12 +220,16 @@ const MessageInput = ({ text, setText, sendMessage, files, setFiles }) => {
             />
           </Tooltip>
 
-          <button type="submit">
-            <IoIosSend
-              fontSize={35}
-              className="bg-green-400 py-2 px-2 rounded-full hover:bg-green-500 cursor-pointer transition-all duration-700 ease-in-out"
-            />
-          </button>
+          {isMsgSending ? (
+            <Loading type="gradient" />
+          ) : (
+            <button type="submit">
+              <IoIosSend
+                fontSize={35}
+                className="bg-green-400 py-2 px-2 rounded-full hover:bg-green-500 cursor-pointer transition-all duration-700 ease-in-out"
+              />
+            </button>
+          )}
         </div>
       </form>
       {isAudioDialogueOpen && (

@@ -10,7 +10,7 @@ exports.sendMessage = async (req, res) => {
     if (attachments.length > 0) {
       const uploader = async (path) =>
         await cloudinary.v2.uploader.upload_large(path, {
-          resource_type: "raw",
+          resource_type: "auto",
         });
 
       for (const file of attachments) {
@@ -19,12 +19,18 @@ exports.sendMessage = async (req, res) => {
           attachmentId: newPath.public_id,
           name: file.name,
           url: newPath.secure_url,
-          type:
-            newPath.format ??
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          type: file.type.includes("image")
+            ? "png"
+            : file.type.includes("pdf")
+            ? "pdf"
+            : file.type.includes("audio")
+            ? "mp3"
+            : "video",
         });
       }
     }
+
+    console.log(uploadedFiles);
 
     await prisma.message.create({
       data: {
