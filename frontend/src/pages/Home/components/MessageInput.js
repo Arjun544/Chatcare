@@ -112,7 +112,7 @@ const MessageInput = ({
                     <div
                       key={index}
                       className={`flex items-center justify-center rounded-xl gap-4 w-60 px-4 h-12 ${
-                        file.size.split(" ")[0] > 5000
+                        file.size.split(" ")[0] > 100000
                           ? "bg-red-400"
                           : "bg-slate-300 "
                       }`}
@@ -127,7 +127,7 @@ const MessageInput = ({
                         </h1>
                       </div>
                     </div>
-                  ) : (
+                  ) : file.name.split(".")[1] === "pdf" ? (
                     <div
                       key={index}
                       className={`flex flex-grow items-center justify-start rounded-xl gap-4 w-60 px-4 h-12 ${
@@ -143,6 +143,21 @@ const MessageInput = ({
                         </h1>
                         <h1 className=" text-xs font-semibold tracking-wider text-green-500">
                           {file.size}
+                        </h1>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      key={index}
+                      className={`flex flex-grow items-center justify-start rounded-xl gap-4 w-60 px-4 h-12 bg-red-400`}
+                    >
+                      <BsFileEarmarkMedicalFill className="h-6 w-6" />
+                      <div className="flex flex-col">
+                        <h1 className=" text-xs font-semibold tracking-wider line-clamp-1">
+                          {file.name}
+                        </h1>
+                        <h1 className=" text-xs font-semibold tracking-wider text-green-500">
+                          Not supported
                         </h1>
                       </div>
                     </div>

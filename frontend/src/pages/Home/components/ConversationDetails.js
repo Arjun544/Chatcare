@@ -96,7 +96,7 @@ const ConversationDetails = ({
           console.log("test");
         });
       }
-      // pdf size is limited to 5MB
+      // Video size is limited to 100MB
       else if (
         files
           .filter((item) => item.type.includes("video"))
@@ -105,6 +105,24 @@ const ConversationDetails = ({
         return customToast("Video size limit exceeded", () => {
           console.log("test");
         });
+      }
+      // Audio size is limited to 100MB
+      else if (
+        files
+          .filter((item) => item.type.includes("audio"))
+          .some((file) => file.size.split(" ")[0] > 100000 && !user.isPremium)
+      ) {
+        return customToast("Audio size limit exceeded", () => {
+          console.log("test");
+        });
+      }
+      // Not supported file type
+      else if (
+        files.filter(
+          (item) => !item.type.includes(["image", "pdf", "video", "audio"])
+        )
+      ) {
+        return toast.error("Not supported file types");
       }
 
       const receiverId = conversation.members.find(
