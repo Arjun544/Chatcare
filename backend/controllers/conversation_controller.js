@@ -4,31 +4,7 @@ const cloudinary = require("cloudinary");
 exports.createConversation = async (req, res) => {
   const { byId, toId, message, attachments } = req.body;
   try {
-    let uploadedFiles = [];
-    if (attachments.length > 0) {
-      const uploader = async (path) =>
-        await cloudinary.v2.uploader.upload_large(path, {
-          resource_type: "auto",
-        });
-
-      for (const file of attachments) {
-        const newPath = await uploader(file.url);
-        uploadedFiles.push({
-          attachmentId: newPath.public_id,
-          name: file.name,
-          url: newPath.secure_url,
-          type: file.type.includes("image")
-            ? "png"
-            : file.type.includes("pdf")
-            ? "pdf"
-            : file.type.includes("audio")
-            ? "mp3"
-            : "video",
-        });
-      }
-    }
-
-    await prisma.conversation.create({
+    const newConversation = await prisma.conversation.create({
       data: {
         members: {
           connect: [{ id: +byId }, { id: +toId }],
@@ -37,7 +13,7 @@ exports.createConversation = async (req, res) => {
           create: {
             text: message,
             attachments: {
-              create: uploadedFiles.length > 0 ? uploadedFiles : [],
+              create: [],
             },
             sender: {
               connect: {
@@ -52,7 +28,47 @@ exports.createConversation = async (req, res) => {
           },
         },
       },
+      include: {
+        messages: true,
+      },
     });
+
+    let uploadedFiles = [];
+    if (attachments.length > 0) {
+      const uploader = async (path) =>
+        await cloudinary.v2.uploader.upload_large(path, {
+          resource_type: "auto",
+        });
+
+      for (const file of attachments) {
+        const newPath = await uploader(file.url);
+        uploadedFiles.push({
+          attachmentId: newPath.public_id,
+          name: file.name,
+          url: newPath.secure_url,
+          conversationId: +newConversation.id,
+          type: file.type.includes("image")
+            ? "png"
+            : file.type.includes("pdf")
+            ? "pdf"
+            : file.type.includes("audio")
+            ? "mp3"
+            : "video",
+        });
+      }
+
+      await prisma.message.update({
+        where: {
+          id: newConversation.messages[0].id,
+        },
+        data: {
+          attachments: {
+            create: uploadedFiles,
+          },
+        },
+      });
+    }
+
     return res.json({
       success: true,
       message: "Conversation created",
@@ -126,18 +142,30 @@ exports.getConversationMsgs = async (req, res) => {
   }
 };
 
-exports.getConversationImages = async (req, res) => {
+exports.getConversationAttachments = async (req, res) => {
   const { conversationId } = req.params;
+  const { media, files, links } = req.query;
+
   try {
-    const images = await prisma.message.findMany({
-      where: {
-        conversationId: +conversationId,
-      },
-    });
-    console.log(images);
+    const attachments = links
+      ? await prisma.message.findMany({
+          where: {
+            conversationId: +conversationId,
+            text: {
+              contains: "http",
+            },
+          },
+        })
+      : await prisma.attachment.findMany({
+          where: {
+            conversationId: +conversationId,
+            type: media ? "png" || "mp3" || "video" : files && "pdf",
+          },
+      });
+    console.log(attachments);
     return res.json({
       success: true,
-      images,
+      attachments,
     });
   } catch (error) {
     console.log(error);

@@ -25,7 +25,6 @@ const Conversations = ({
 
   useEffect(() => {
     socket.current.on("activeUsers", (activeUsers) => {
-      console.log(activeUsers);
       const filteredUsers = activeUsers.filter(
         (newUser) => newUser.id !== user.id
       );

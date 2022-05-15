@@ -25,7 +25,6 @@ const ResetPassword = () => {
     try {
       setIsLoading(true);
       const { data } = await forgetPassword(email);
-      console.log(data);
       setIsLoading(false);
       if (data.success === false) {
         toast.error(data.message);

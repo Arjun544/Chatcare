@@ -54,7 +54,6 @@ const Friends = () => {
   } = useQuery(
     ["allUsers", friends],
     async () => {
-      console.log(friends);
       const response = await getAllUsers(
         user.email,
         friends.friends.map((friend) => friend.id)

@@ -5,14 +5,15 @@ import {
   BsFileEarmarkBinaryFill,
   BsFileEarmarkImageFill,
 } from "react-icons/bs";
-import { RiLinksFill, RiArrowLeftSLine } from "react-icons/ri";
+import { RiLinksFill } from "react-icons/ri";
+import AttachmentsDetails from "./AttachmentsDetails";
 
 const tabs = ["Media", "Files", "Star"];
 
 const ConversationAttachments = ({ conversation }) => {
   const { user } = useSelector((state) => state.auth);
   const [isFilesOpen, setIsFilesOpen] = useState(false);
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentFiles, setCurrentFiles] = useState("");
 
   return conversation !== null && !isFilesOpen ? (
     // Media, Files & Links
@@ -42,13 +43,29 @@ const ConversationAttachments = ({ conversation }) => {
           Media, files & links
         </h1>
         {[
-          { name: "Media", icon: <BsFileEarmarkImageFill size={20} /> },
-          { name: "Files", icon: <BsFileEarmarkBinaryFill size={20} /> },
-          { name: "Links", icon: <RiLinksFill size={20} /> },
+          {
+            name: "Media",
+            icon: <BsFileEarmarkImageFill size={20} />,
+            onClick: () => setCurrentFiles("media"),
+          },
+          {
+            name: "Files",
+            icon: <BsFileEarmarkBinaryFill size={20} />,
+            onClick: () => setCurrentFiles("files"),
+          },
+          {
+            name: "Links",
+            icon: <RiLinksFill size={20} />,
+            onClick: () => setCurrentFiles("links"),
+          },
         ].map((item, index) => (
           <div
             key={index}
-            onClick={(e) => setIsFilesOpen(!isFilesOpen)}
+            onClick={(e) => {
+              e.preventDefault();
+              setIsFilesOpen(!isFilesOpen);
+              item.onClick();
+            }}
             className="w-full flex items-center py-3 px-2 rounded-lg gap-2 cursor-pointer hover:bg-sky-100"
           >
             {item.icon}
@@ -68,27 +85,11 @@ const ConversationAttachments = ({ conversation }) => {
     </div>
   ) : (
     // Details
-    <div className="w-2/12 bg-white flex flex-col my-6 gap-8 px-6 transition-all duration-500 ease-in-out">
-      <div className="flex items-start gap-4 w-full">
-        <RiArrowLeftSLine onClick={e => setIsFilesOpen(false)} size={25} className="cursor-pointer" />
-        <h1 className="text-black font-semibold tracking-wider">
-          Media, Files & Links
-        </h1>
-      </div>
-      <div className="flex items-center justify-around w-full h-14 bg-slate-200 rounded-2xl">
-        {tabs.map((tab, index) => (
-          <h1
-            key={index}
-            onClick={() => setCurrentTab(index)}
-            className={`text-black tracking-wider font-normal text-sm cursor-pointer px-5 py-2 rounded-xl ${
-              currentTab === index && "bg-slate-300"
-            } hover:bg-slate-300 hover:text-white transition-all duration-500 ease-in-out`}
-          >
-            {tab}
-          </h1>
-        ))}
-      </div>
-    </div>
+    <AttachmentsDetails
+      conversationId={conversation.id}
+      currentFiles={currentFiles}
+      setIsFilesOpen={setIsFilesOpen}
+    />
   );
 };
 

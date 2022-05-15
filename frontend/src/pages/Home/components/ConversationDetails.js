@@ -52,7 +52,6 @@ const ConversationDetails = ({
     ["messages"],
     async () => {
       const response = await getConversationMessages(conversation.id);
-      console.log(response.data.messages);
       return response.data.messages;
     },
     {
@@ -75,9 +74,12 @@ const ConversationDetails = ({
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
+    const filesType = files.map((item) => item.type);
+
     try {
       // Image size is limited to 5MB
       if (
+        files.length > 0 &&
         files
           .filter((item) => item.type.includes("image"))
           .some((file) => file.size.split(" ")[0] > 5000 && !user.isPremium)
@@ -88,6 +90,7 @@ const ConversationDetails = ({
       }
       // pdf size is limited to 5MB
       else if (
+        files.length > 0 &&
         files
           .filter((item) => item.type.includes("pdf"))
           .some((file) => file.size.split(" ")[0] > 5000 && !user.isPremium)
@@ -98,6 +101,7 @@ const ConversationDetails = ({
       }
       // Video size is limited to 100MB
       else if (
+        files.length > 0 &&
         files
           .filter((item) => item.type.includes("video"))
           .some((file) => file.size.split(" ")[0] > 100000 && !user.isPremium)
@@ -108,6 +112,7 @@ const ConversationDetails = ({
       }
       // Audio size is limited to 100MB
       else if (
+        files.length > 0 &&
         files
           .filter((item) => item.type.includes("audio"))
           .some((file) => file.size.split(" ")[0] > 100000 && !user.isPremium)
@@ -118,40 +123,39 @@ const ConversationDetails = ({
       }
       // Not supported file type
       else if (
-        files.filter(
-          (item) => !item.type.includes(["image", "pdf", "video", "audio"])
-        )
+        files.length > 0 &&
+        !filesType.includes("application/pdf" || "image" || "video" || "audio")
       ) {
         return toast.error("Not supported file types");
-      }
-
-      const receiverId = conversation.members.find(
-        (member) => member.id !== user.id
-      ).id;
-      const attachments = files.map((file) => ({
-        url: file.base64,
-        name: file.name,
-        type: file.type,
-      }));
-      if (chatConversations.includes(conversation)) {
-        setIsMsgSending(true);
-        await sendMessage(
-          text,
-          attachments,
-          receiverId,
-          user.id,
-          conversation.id
-        );
-        setIsMsgSending(false);
       } else {
-        setIsMsgSending(true);
-        await createConversation(user.id, receiverId, text, attachments);
-        await chatConversationsRefetch();
-        setIsMsgSending(false);
-        setText("");
-        setFiles([]);
-        scrollToBottom();
+        const receiverId = conversation.members.find(
+          (member) => member.id !== user.id
+        ).id;
+        const attachments = files.map((file) => ({
+          url: file.base64,
+          name: file.name,
+          type: file.type,
+        }));
+        if (chatConversations.includes(conversation)) {
+          setIsMsgSending(true);
+          await sendMessage(
+            text.trim(),
+            attachments,
+            receiverId,
+            user.id,
+            conversation.id
+          );
+          setIsMsgSending(false);
+        } else {
+          setIsMsgSending(true);
+          await createConversation(user.id, receiverId, text, attachments);
+          await chatConversationsRefetch();
+          setIsMsgSending(false);
+        }
       }
+      setText("");
+      setFiles([]);
+      scrollToBottom();
     } catch (error) {
       setIsMsgSending(false);
       console.log(error);
@@ -232,7 +236,7 @@ const ConversationDetails = ({
       <div className="flex flex-col h-full w-full bg-slate-200 py-4 overflow-y-auto">
         {isMessagesLoading ? (
           <MessagesLoader />
-        ) : messages < 1 ? (
+        ) : !isMessagesLoading && messages.length === 0 ? (
           <div className="flex h-full w-full flex-col items-center justify-center">
             <div className="flex h-60 w-60 items-center justify-center">
               <Lottie animationData={newMessage} autoPlay={true} loop={true} />
@@ -243,7 +247,7 @@ const ConversationDetails = ({
           </div>
         ) : (
           <div>
-            {messages &&
+            {!isMessagesLoading &&
               messages.map((message, index) => (
                 <MessageTile
                   key={index}

@@ -52,7 +52,6 @@ const Main = () => {
     ["conversations"],
     async () => {
       const response = await getConversations(user.id);
-      console.log(response.data.conversations);
       return response.data.conversations;
     },
     {
@@ -62,7 +61,6 @@ const Main = () => {
       refetchOnWindowFocus: false,
     }
     );
-console.log(chatConversations);
   return (
     <AppContext.Provider
       value={{

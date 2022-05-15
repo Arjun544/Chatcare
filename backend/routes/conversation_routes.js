@@ -6,12 +6,16 @@ const {
   getUserConversations,
   createConversation,
   getConversationMsgs,
-  getConversationImages,
+  getConversationAttachments,
 } = require("../controllers/conversation_controller");
 
 router.post("/create", authMiddleware, createConversation);
 router.get("/get/:userId", authMiddleware, getUserConversations);
 router.get("/messages/:conversationId", authMiddleware, getConversationMsgs);
-router.get("/images/:conversationId", authMiddleware, getConversationImages);
+router.get(
+  "/attachments/:conversationId",
+  authMiddleware,
+  getConversationAttachments
+);
 
 module.exports = router;

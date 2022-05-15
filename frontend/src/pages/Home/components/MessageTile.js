@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { HiDotsVertical, HiEmojiHappy } from "react-icons/hi";
 import { AiFillStar } from "react-icons/ai";
 import { IoMdTrash } from "react-icons/io";
-import { MdAudiotrack, MdReply, MdVideoLibrary } from "react-icons/md";
+import { MdReply } from "react-icons/md";
 import { BsFileEarmarkMedicalFill } from "react-icons/bs";
 import "emoji-mart/css/emoji-mart.css";
 import { Emoji, Picker } from "emoji-mart";
@@ -13,6 +13,9 @@ import { useSelector } from "react-redux";
 import Moment from "react-moment";
 import { Popover } from "@nextui-org/react";
 import FullImageView from "./FullImageView";
+import LinkPreview from "@ashwamegh/react-link-preview";
+import { isValidHttpUrl } from "../../../helpers/isValidHttpUrl";
+import { PreviewLinkComponent } from "../../../components/LinkPreview";
 
 const MessageTile = ({ message, conversationId }) => {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -21,6 +24,11 @@ const MessageTile = ({ message, conversationId }) => {
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [isShowingEmojis, setIsShowingEmojis] = useState(false);
   const [isImageClicked, setIsImageClicked] = useState(false);
+
+  const handleOnImageClick = (e) => {
+    e.preventDefault();
+    setIsImageClicked(true);
+  };
 
   return (
     <div
@@ -105,13 +113,16 @@ const MessageTile = ({ message, conversationId }) => {
                   attachment.type === "jpeg" ? (
                     <div key={attachment.id}>
                       {/* Full Message Image view */}
-                      <FullImageView
-                        image={attachment}
-                        isImageClicked={isImageClicked}
-                        setIsImageClicked={setIsImageClicked}
-                      />
+                      {isImageClicked && (
+                        <FullImageView
+                          image={attachment}
+                          conversationId={conversationId}
+                          isImageClicked={isImageClicked}
+                          setIsImageClicked={setIsImageClicked}
+                        />
+                      )}
                       <img
-                        onClick={(e) => setIsImageClicked(true)}
+                        onClick={(e) => handleOnImageClick(e)}
                         src={attachment.url}
                         className="w-32 h-32 object-cover rounded-xl cursor-pointer bg-blue-200 hover:scale-95 transition-all duration-400 ease-in-out"
                       />
@@ -128,7 +139,12 @@ const MessageTile = ({ message, conversationId }) => {
                     attachment.type === "wav" ||
                     attachment.type === "aiff" ||
                     attachment.type === "acc" ? (
-                          <audio src={attachment.url} autoPlay={false} controls className="h-10 opacity-80"/>
+                    <audio
+                      src={attachment.url}
+                      autoPlay={false}
+                      controls
+                      className="h-10 opacity-80"
+                    />
                   ) : (
                     <a
                       key={attachment.id}
@@ -146,7 +162,11 @@ const MessageTile = ({ message, conversationId }) => {
                 )}
               </div>
             )}
-            {message.text && (
+            {message.text && isValidHttpUrl(message.text) ? (
+              <a href={message.text} target="_blank" rel="noopener noreferrer">
+                <LinkPreview url={message.text} render={PreviewLinkComponent} />
+              </a>
+            ) : (
               <h1
                 className={`text-black tracking-wider text-sm ${
                   message.attachments.length > 0 && "mt-2"
@@ -199,8 +219,16 @@ const MessageTile = ({ message, conversationId }) => {
                 )}
               </div>
             )}
-            {message.text && (
-              <h1 className=" text-black tracking-wider text-sm mt-2">
+            {message.text && isValidHttpUrl(message.text) ? (
+              <a href={message.text} target="_blank" rel="noopener noreferrer">
+                <LinkPreview url={message.text} render={PreviewLinkComponent} />
+              </a>
+            ) : (
+              <h1
+                className={`text-black tracking-wider text-sm ${
+                  message.attachments.length > 0 && "mt-2"
+                }`}
+              >
                 {message.text}
               </h1>
             )}

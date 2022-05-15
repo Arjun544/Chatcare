@@ -19,6 +19,7 @@ exports.sendMessage = async (req, res) => {
           attachmentId: newPath.public_id,
           name: file.name,
           url: newPath.secure_url,
+          conversationId: +conversationId,
           type: file.type.includes("image")
             ? "png"
             : file.type.includes("pdf")

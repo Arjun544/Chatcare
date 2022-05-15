@@ -18,5 +18,5 @@ export const getConversations = async (userId) =>
 export const getConversationMessages = async (conversationId) =>
   await api.get(`/conversation/messages/${conversationId}`);
 
-export const getConversationImages = async (conversationId) =>
-  await api.get(`/conversation/images/${conversationId}`);
+export const getConversationAttachments = async (conversationId, type) =>
+  await api.get(`/conversation/attachments/${conversationId}?${type}=true`);
