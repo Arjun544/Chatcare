@@ -39,7 +39,10 @@ const ConversationAttachments = ({ conversation }) => {
         </h1>
       </div>
       <div className="flex flex-col items-start w-full">
-        <h1 className="text-black font-semibold tracking-wider mb-2 text-sm">
+        <h1 className="text-black tracking-wider font-semibold w-full text-sm cursor-pointer py-3 px-2 rounded-lg hover:bg-sky-100">
+          Star messages
+        </h1>
+        <h1 className="text-black font-semibold tracking-wider w-full text-sm py-3 px-2 rounded-lg hover:bg-sky-100">
           Media, files & links
         </h1>
         {[
@@ -75,10 +78,10 @@ const ConversationAttachments = ({ conversation }) => {
           </div>
         ))}
 
-        <h1 className="text-red-400 tracking-wider font-semibold text-sm my-3 cursor-pointer hover:text-red-600">
+        <h1 className="text-red-400 tracking-wider font-semibold text-sm w-full cursor-pointer py-3 px-2 rounded-lg hover:bg-sky-100">
           Clear chat
         </h1>
-        <h1 className="text-red-400 tracking-wider font-semibold text-sm my-3 cursor-pointer hover:text-red-600">
+        <h1 className="text-red-400 tracking-wider font-semibold text-sm w-full cursor-pointer py-3 px-2 rounded-lg hover:bg-sky-100">
           Delete
         </h1>
       </div>

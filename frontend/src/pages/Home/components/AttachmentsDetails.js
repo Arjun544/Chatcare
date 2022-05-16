@@ -6,6 +6,7 @@ import { getConversationAttachments } from "../../../services/conversation_servi
 import { BsFileEarmarkMedicalFill } from "react-icons/bs";
 import LinkPreview from "@ashwamegh/react-link-preview";
 import { PreviewLinkComponent } from "../../../components/LinkPreview";
+import { RotateSpinner } from "react-spinners-kit";
 
 const AttachmentsDetails = ({
   conversationId,
@@ -42,12 +43,16 @@ const AttachmentsDetails = ({
           size={25}
           className="cursor-pointer"
         />
-        <h1 className="text-black font-semibold tracking-wider capitalize">
-          {currentFiles}
-        </h1>
+        <div className="flex">
+          <h1 className="text-black font-semibold tracking-wider capitalize">
+            {currentFiles} ({files?.length})
+          </h1>
+        </div>
       </div>
       {isLoading ? (
-        <p>Loading</p>
+        <div className="flex items-center justify-center mt-20">
+          <RotateSpinner sty size={30} color="#44C7F4" loading={isLoading} />
+        </div>
       ) : isError ? (
         <p>Error</p>
       ) : (
