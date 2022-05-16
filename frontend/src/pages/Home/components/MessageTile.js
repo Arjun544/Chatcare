@@ -13,9 +13,8 @@ import { useSelector } from "react-redux";
 import Moment from "react-moment";
 import { Popover } from "@nextui-org/react";
 import FullImageView from "./FullImageView";
-import LinkPreview from "@ashwamegh/react-link-preview";
 import { isValidHttpUrl } from "../../../helpers/isValidHttpUrl";
-import { PreviewLinkComponent } from "../../../components/LinkPreview";
+import LinkPreview from "../../../components/LinkPreview";
 
 const MessageTile = ({ message, conversationId }) => {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -172,9 +171,7 @@ const MessageTile = ({ message, conversationId }) => {
               </div>
             )}
             {message.text && isValidHttpUrl(message.text) ? (
-              <a href={message.text} target="_blank" rel="noopener noreferrer">
-                <LinkPreview url={message.text} render={PreviewLinkComponent} />
-              </a>
+              <LinkPreview url={message.text} />
             ) : (
               <h1
                 className={`text-black tracking-wider text-sm ${
@@ -229,9 +226,7 @@ const MessageTile = ({ message, conversationId }) => {
               </div>
             )}
             {message.text && isValidHttpUrl(message.text) ? (
-              <a href={message.text} target="_blank" rel="noopener noreferrer">
-                <LinkPreview url={message.text} render={PreviewLinkComponent} />
-              </a>
+              <LinkPreview url={message.text} />
             ) : (
               <h1
                 className={`text-black tracking-wider text-sm ${

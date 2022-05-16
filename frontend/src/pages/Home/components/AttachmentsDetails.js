@@ -4,9 +4,8 @@ import { useQuery } from "react-query";
 import { isValidHttpUrl } from "../../../helpers/isValidHttpUrl";
 import { getConversationAttachments } from "../../../services/conversation_services";
 import { BsFileEarmarkMedicalFill } from "react-icons/bs";
-import LinkPreview from "@ashwamegh/react-link-preview";
-import { PreviewLinkComponent } from "../../../components/LinkPreview";
 import { RotateSpinner } from "react-spinners-kit";
+import LinkPreview from "../../../components/LinkPreview";
 
 const AttachmentsDetails = ({
   conversationId,
@@ -76,7 +75,7 @@ const AttachmentsDetails = ({
                   rel="noopener noreferrer"
                   className="bg-slate-200 p-4 rounded-xl hover:bg-slate-100"
                 >
-                  <LinkPreview url={file.text} render={PreviewLinkComponent} />
+                  <LinkPreview url={file.text} />
                 </a>
               )
             ) : (

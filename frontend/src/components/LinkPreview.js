@@ -1,14 +1,43 @@
+import axios from "axios";
 import React from "react";
+import { useQuery } from "react-query";
 
-export function PreviewLinkComponent({ loading, preview }) {
-  return loading ? (
-    <div className="flex items-center justify-center h-32 w-52 text-slate-500 tracking-wider font-semibold text-sm">
-      Loading link
+const LinkPreview = ({ url }) => {
+  const {
+    isLoading: isLoading,
+    data: preview,
+    refetch: refetch,
+    isError: isError,
+  } = useQuery(
+    ["link preview", url],
+    async () => {
+      const response = await axios.post(
+        `https://graph.facebook.com/v13.0/?scrap=true&id=${url}&access_token=${process.env.REACT_APP_FB_ACCESS_TOKEN}`
+      );
+      console.log("linnkkkkkk", response.data);
+      return response.data;
+    },
+    {
+      keepPreviousData: true,
+      retryOnMount: false,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  return isLoading ? (
+    <div className="flex h-32 w-52  items-center justify-center text-slate-500 tracking-wider text-sm font-semibold">
+      Loading Link
     </div>
   ) : (
-    <div className="flex flex-col gap-3">
+    <a
+      className="flex flex-col gap-2 items-start"
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       <img
-        src={preview.img}
+        src={preview.image[0].url}
         alt={preview.title}
         className="h-32 w-full rounded-2xl"
       />
@@ -16,8 +45,10 @@ export function PreviewLinkComponent({ loading, preview }) {
         {preview.title}
       </p>
       <p className="text-slate-500 font-semibold tracking-wider text-xs">
-        {preview.domain}
+        {preview.url}
       </p>
-    </div>
+    </a>
   );
 };
+
+export default LinkPreview;
