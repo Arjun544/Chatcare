@@ -7,6 +7,8 @@ import {
 } from "react-icons/bs";
 import { RiLinksFill } from "react-icons/ri";
 import AttachmentsDetails from "./AttachmentsDetails";
+import { MdVideoLibrary } from "react-icons/md";
+import { AiFillAudio } from "react-icons/ai";
 
 const tabs = ["Media", "Files", "Star"];
 
@@ -47,9 +49,19 @@ const ConversationAttachments = ({ conversation }) => {
         </h1>
         {[
           {
-            name: "Media",
+            name: "Images",
             icon: <BsFileEarmarkImageFill size={20} />,
-            onClick: () => setCurrentFiles("media"),
+            onClick: () => setCurrentFiles("images"),
+          },
+          {
+            name: "Videos",
+            icon: <MdVideoLibrary size={20} />,
+            onClick: () => setCurrentFiles("videos"),
+          },
+          {
+            name: "Audios",
+            icon: <AiFillAudio size={20} />,
+            onClick: () => setCurrentFiles("audios"),
           },
           {
             name: "Files",

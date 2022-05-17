@@ -1,7 +1,6 @@
 import React, {
   useContext,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -44,12 +43,10 @@ const ConversationDetails = ({
   const [isTyping, setIsTyping] = useState(true);
 
   const {
-    isLoading: isMessagesLoading,
+    isLoading,
     data: messages,
-    refetch: messagesRefetch,
-    isError: isMessagesError,
   } = useQuery(
-    ["messages"],
+    ["messages", conversation],
     async () => {
       const response = await getConversationMessages(conversation.id);
       return response.data.messages;
@@ -234,9 +231,9 @@ const ConversationDetails = ({
       {/* Messages */}
 
       <div className="flex flex-col h-full w-full bg-slate-200 py-4 overflow-y-auto">
-        {isMessagesLoading ? (
+        {isLoading ? (
           <MessagesLoader />
-        ) : !isMessagesLoading && messages.length === 0 ? (
+        ) : !isLoading && messages.length === 0 ? (
           <div className="flex h-full w-full flex-col items-center justify-center">
             <div className="flex h-60 w-60 items-center justify-center">
               <Lottie animationData={newMessage} autoPlay={true} loop={true} />
@@ -246,8 +243,9 @@ const ConversationDetails = ({
             </span>
           </div>
         ) : (
-          <div>
-            {!isMessagesLoading &&
+              <div>
+                <p className="flex items-center justify-center tracking-wider">Load more</p>
+            {!isLoading &&
               messages.map((message, index) => (
                 <MessageTile
                   key={index}

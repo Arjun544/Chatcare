@@ -35,6 +35,7 @@ model User {
   recevied             Message[]      @relation(name: "Recevied")
   sent                 Message[]      @relation(name: "Sent")
   conversations        Conversation[]
+  reactions Reaction[]
 }
 
 model Token {
@@ -47,26 +48,30 @@ model Token {
 }
 
 model Conversation {
-  id            Int          @id @default(autoincrement())
-  members       User[]
-  messages      Message[]
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @default(now())
-  attachments   Attachment[]
+  id          Int          @id @default(autoincrement())
+  members     User[]
+  messages    Message[]    @relation("messages")
+  stars       Message[]    @relation("stars")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+  attachments Attachment[]
 }
 
 model Message {
   id             Int           @id @default(autoincrement())
   text           String
   attachments    Attachment[]
+  reactions      Reaction[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @default(now())
   receiver       User          @relation("Recevied", fields: [receiverId], references: [id])
   receiverId     Int
   sender         User          @relation("Sent", fields: [senderId], references: [id])
   senderId       Int
-  conversation   Conversation? @relation(fields: [conversationId], references: [id])
+  conversation   Conversation? @relation("messages", fields: [conversationId], references: [id])
   conversationId Int?
+  star           Conversation? @relation("stars", fields: [starId], references: [id])
+  starId         Int?
 }
 
 model Attachment {
@@ -79,4 +84,22 @@ model Attachment {
   messageId      Int?
   conversation   Conversation? @relation(fields: [conversationId], references: [id])
   conversationId Int?
+}
+
+model Reaction {
+  newId       Int      @id @default(autoincrement())
+  id          String
+  name        String
+  native      String
+  message     Message? @relation(fields: [messageId], references: [id])
+  messageId   Int?
+  user        User     @relation(fields: [userId], references: [id])
+  colons      String
+  emoticons   String[]
+  short_names String[]
+  skin        String
+  unified     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  userId      Int
 }

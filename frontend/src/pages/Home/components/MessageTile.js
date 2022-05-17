@@ -15,17 +15,22 @@ import { Popover } from "@nextui-org/react";
 import FullImageView from "./FullImageView";
 import { isValidHttpUrl } from "../../../helpers/isValidHttpUrl";
 import LinkPreview from "../../../components/LinkPreview";
+import { addReact } from "../../../services/message_services";
 
 const MessageTile = ({ message, conversationId }) => {
   const { user: currentUser } = useSelector((state) => state.auth);
   const [isMsgHovered, setIsMsgHovered] = useState(false);
   const [isEmojiHovered, setIsEmojiHovered] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState(null);
+  const [selectedEmoji, setSelectedEmoji] = useState(
+    message.reactions[0] ?? null
+  );
   const [isShowingEmojis, setIsShowingEmojis] = useState(false);
   const [isImageClicked, setIsImageClicked] = useState(false);
+  const [selectedImage, setSelectedImage] = useState({});
 
-  const handleOnImageClick = (e) => {
+  const handleOnImageClick = (e, image) => {
     e.preventDefault();
+    setSelectedImage(image);
     setIsImageClicked(true);
   };
 
@@ -42,7 +47,9 @@ const MessageTile = ({ message, conversationId }) => {
             setIsMsgHovered(false);
             setIsEmojiHovered(false);
           }}
-          className="relative flex items-center gap-3 "
+          className={`relative flex items-center gap-3  ${
+            selectedEmoji !== null ? "mb-2" : "mb-0"
+          }`}
         >
           {isMsgHovered && (
             <div className="flex items-center gap-3">
@@ -104,8 +111,9 @@ const MessageTile = ({ message, conversationId }) => {
                     sheetSize={32}
                     showPreview={false}
                     showSkinTones={false}
-                    onSelect={(emoji) => {
+                    onSelect={async (emoji) => {
                       setSelectedEmoji(emoji);
+                      await addReact(message.id, emoji, currentUser.id);
                     }}
                   />
                 </div>
@@ -115,22 +123,22 @@ const MessageTile = ({ message, conversationId }) => {
           <div className="bg-blue-300 flex flex-col items-start max-w-xl py-2 w-fit px-4 rounded-t-xl rounded-bl-xl mr-8">
             {message.attachments.length > 0 && (
               <div className="flex items-center gap-4">
+                {/* Full Message Image view */}
+                {isImageClicked && (
+                  <FullImageView
+                    image={selectedImage}
+                    conversationId={conversationId}
+                    isImageClicked={isImageClicked}
+                    setIsImageClicked={setIsImageClicked}
+                  />
+                )}
                 {message.attachments.map((attachment) =>
                   attachment.type === "jpg" ||
                   attachment.type === "png" ||
                   attachment.type === "jpeg" ? (
                     <div key={attachment.id}>
-                      {/* Full Message Image view */}
-                      {isImageClicked && (
-                        <FullImageView
-                          image={attachment}
-                          conversationId={conversationId}
-                          isImageClicked={isImageClicked}
-                          setIsImageClicked={setIsImageClicked}
-                        />
-                      )}
                       <img
-                        onClick={(e) => handleOnImageClick(e)}
+                        onClick={(e) => handleOnImageClick(e, attachment)}
                         src={attachment.url}
                         className="w-32 h-32 object-cover rounded-xl cursor-pointer bg-blue-200 hover:scale-95 transition-all duration-400 ease-in-out"
                       />
@@ -182,12 +190,12 @@ const MessageTile = ({ message, conversationId }) => {
               </h1>
             )}
           </div>
-          {selectedEmoji !== null && (
+          {message.reactions[0] !== undefined && (
             <div
               onClick={(e) => setIsShowingEmojis(true)}
-              className="absolute flex z-50 right-9 -bottom-3 rounded-full items-center justify-center p-1 cursor-pointer shadow-sm bg-white"
+              className="absolute flex z-50 right-9 -bottom-3 rounded-full items-center justify-center p-0.5 cursor-pointer shadow-sm bg-white"
             >
-              <Emoji emoji={selectedEmoji} size={15} />
+              <Emoji emoji={selectedEmoji} size={18} />
             </div>
           )}
         </div>
@@ -198,7 +206,9 @@ const MessageTile = ({ message, conversationId }) => {
             setIsMsgHovered(false);
             setIsEmojiHovered(false);
           }}
-          className="relative flex items-center gap-3"
+          className={`relative flex items-center gap-3  ${
+            selectedEmoji !== null ? "mb-2" : "mb-0"
+          }`}
         >
           <div className="bg-slate-300 flex flex-col items-start gap-2 max-w-xl py-2 w-fit px-4 rounded-t-xl rounded-br-xl ml-8">
             {message.attachments.length > 0 && (
@@ -236,12 +246,12 @@ const MessageTile = ({ message, conversationId }) => {
                 {message.text}
               </h1>
             )}
-            {selectedEmoji !== null && (
+            {message.reactions[0] !== undefined && (
               <div
                 onClick={(e) => setIsShowingEmojis(true)}
                 className="absolute flex z-50 left-9 -bottom-3 rounded-full items-center justify-center p-1 cursor-pointer shadow-sm bg-white"
               >
-                <Emoji emoji={selectedEmoji} size={15} />
+                <Emoji emoji={selectedEmoji} size={18} />
               </div>
             )}
           </div>
@@ -283,9 +293,9 @@ const MessageTile = ({ message, conversationId }) => {
                     sheetSize={32}
                     showPreview={false}
                     showSkinTones={false}
-                    onSelect={(emoji) => {
-                      console.log(emoji);
+                    onSelect={async (emoji) => {
                       setSelectedEmoji(emoji);
+                      await addReact(message.id, emoji, currentUser.id);
                     }}
                   />
                 </div>
@@ -306,21 +316,30 @@ const MessageTile = ({ message, conversationId }) => {
           <h1 className="text-black tracking-wider font-semibold">
             Message reactions
           </h1>
-          <div className="flex flex-grow px-4 h-60 my-8">
+          <div className="flex flex-col flex-grow px-4 max-h-96 my-8 overflow-auto">
             {message.reactions.map((reaction) => (
-              <div className="flex items-center justify-between w-full h-20 px-4 mb-3 bg-white hover:bg-slate-50 rounded-xl">
+              <div className="flex items-center justify-between w-full h-20 px-4 bg-white hover:bg-slate-50 rounded-xl">
                 <div className="flex items-center gap-2">
-                  <User src={profileHolder} zoomed="true" bordered />
+                  <User
+                    // src={profileHolder}
+                    src={
+                      reaction.user.profile === ""
+                        ? profileHolder
+                        : reaction.user.profile
+                    }
+                    zoomed="true"
+                    bordered
+                  />
                   <div className="flex flex-col items-start">
                     <h1 className="text-black font-semibold tracking-wider">
-                      {reaction.by}
+                      {reaction.user.username}
                     </h1>
                     <h1 className="text-slate-300 tracking-wider text-sm">
                       Click to remove
                     </h1>
                   </div>
                 </div>
-                <Emoji emoji={reaction.emoji} size={28} />
+                <Emoji emoji={reaction} size={28} />
               </div>
             ))}
           </div>

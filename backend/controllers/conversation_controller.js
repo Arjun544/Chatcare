@@ -127,6 +127,11 @@ exports.getConversationMsgs = async (req, res) => {
       take: -15, // take last 15 messages
       include: {
         attachments: true,
+        reactions: {
+          include: {
+            user: true,
+          }
+        },
       },
     });
     return res.json({
@@ -144,7 +149,7 @@ exports.getConversationMsgs = async (req, res) => {
 
 exports.getConversationAttachments = async (req, res) => {
   const { conversationId } = req.params;
-  const { media, files, links } = req.query;
+  const { images, videos, audios, files, links } = req.query;
 
   try {
     const attachments = links
@@ -159,9 +164,15 @@ exports.getConversationAttachments = async (req, res) => {
       : await prisma.attachment.findMany({
           where: {
             conversationId: +conversationId,
-            type: media ? "png" || "mp3" || "video" : files && "pdf",
+            type: images
+              ? "png"
+              : videos
+              ? "video"
+              : audios
+              ? "audio"
+              : files && "pdf",
           },
-      });
+        });
     console.log(attachments);
     return res.json({
       success: true,

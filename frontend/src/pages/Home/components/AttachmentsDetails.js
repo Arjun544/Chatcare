@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { RiArrowLeftSLine } from "react-icons/ri";
 import { useQuery } from "react-query";
 import { isValidHttpUrl } from "../../../helpers/isValidHttpUrl";
@@ -6,24 +6,28 @@ import { getConversationAttachments } from "../../../services/conversation_servi
 import { BsFileEarmarkMedicalFill } from "react-icons/bs";
 import { RotateSpinner } from "react-spinners-kit";
 import LinkPreview from "../../../components/LinkPreview";
+import FullImageView from "./FullImageView";
 
 const AttachmentsDetails = ({
   conversationId,
   currentFiles,
   setIsFilesOpen,
 }) => {
+  const [isImageClicked, setIsImageClicked] = useState(false);
+  const [selectedImage, setSelectedImage] = useState({});
+
   const {
-    isLoading: isLoading,
+    isLoading,
     data: files,
-    refetch: refetch,
-    isError: isError,
+    isError,
   } = useQuery(
-    ["attachment files", currentFiles],
+    ["attachment files", conversationId, currentFiles],
     async () => {
       const response = await getConversationAttachments(
         conversationId,
         currentFiles
       );
+      console.log(response.data.attachments);
       return response.data.attachments;
     },
     {
@@ -53,23 +57,59 @@ const AttachmentsDetails = ({
           <RotateSpinner sty size={30} color="#44C7F4" loading={isLoading} />
         </div>
       ) : isError ? (
-        <p>Error</p>
+        <div className="flex items-center justify-center mt-20 tracking-wider font-semibold text-slate-400">
+          Could not fetch data
+        </div>
+      ) : files.length === 0 ? (
+        <div className="flex items-center justify-center mt-20 tracking-wider font-semibold text-slate-400">
+          No {currentFiles} found
+        </div>
       ) : (
         <div
           className={`flex flex-col h-full w-full gap-4 overflow-x-auto ${
-            currentFiles === "media" && "grid grid-cols-3 gap-4 content-start"
+            currentFiles === "images" && "grid grid-cols-3 gap-4 content-start"
           }`}
         >
           {files.map((file) =>
             file.type === "png" ? (
-              <img
+              <div key={file.id}>
+                {/* Full Message Image view */}
+                {isImageClicked && (
+                  <FullImageView
+                    image={selectedImage}
+                    conversationId={conversationId}
+                    isImageClicked={isImageClicked}
+                    setIsImageClicked={setIsImageClicked}
+                  />
+                )}
+                <img
+                  onClick={(e) => {
+                    setSelectedImage(file);
+                    setIsImageClicked(true);
+                  }}
+                  src={file.url}
+                  alt="media"
+                  className="h-20 w-20 object-cover rounded-lg bg-white cursor-pointer"
+                />
+              </div>
+            ) : file.type === "video" ? (
+              <video
+                key={file.id}
                 src={file.url}
-                alt="media"
-                className="h-20 w-20 object-cover rounded-lgmt-10 bg-white"
-              />
+                className="rounded-xl"
+                controls
+              ></video>
+            ) : file.type === "audio" ? (
+              <audio
+                key={file.id}
+                src={file.url}
+                className="rounded-xl"
+                controls
+              ></audio>
             ) : file.text ? (
               isValidHttpUrl(file.text) && (
                 <a
+                  key={file.id}
                   href={file.text}
                   target="_blank"
                   rel="noopener noreferrer"

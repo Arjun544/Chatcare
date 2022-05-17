@@ -14,7 +14,6 @@ const Conversations = ({
   setCurrentConversation,
   isStoriesOpened,
   setIsStoriesOpened,
-  
 }) => {
   const { socket, isChatConversationsLoading, chatConversations } =
     useContext(AppContext);

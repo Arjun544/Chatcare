@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "@nextui-org/react";
 import { getConversationAttachments } from "../../../services/conversation_services";
 import { useQuery } from "react-query";
@@ -12,12 +12,11 @@ const FullImageView = ({
   const [selectedImage, setSelectedImage] = useState(image);
 
   const {
-    isLoading: isLoading,
+    isLoading,
     data: images,
-    refetch: refetch,
-    isError: isError,
+    isError,
   } = useQuery(
-    ["convo images"],
+    ["convo images", selectedImage],
     async () => {
       const response = await getConversationAttachments(
         conversationId,

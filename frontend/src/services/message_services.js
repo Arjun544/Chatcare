@@ -23,3 +23,10 @@ export const sendMessage = async (
     senderId,
     conversationId,
   });
+
+  export const addReact = async (msgId, react, userId) =>
+    await api.post("/message/react", {
+      msgId,
+      react,
+      userId,
+    });

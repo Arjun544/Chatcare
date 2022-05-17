@@ -6,7 +6,6 @@ const LinkPreview = ({ url }) => {
   const {
     isLoading,
     data: preview,
-    refetch,
     isError,
   } = useQuery(
     ["link preview", url],
@@ -14,7 +13,6 @@ const LinkPreview = ({ url }) => {
       const response = await axios.post(
         `https://graph.facebook.com/v13.0/?scrap=true&id=${url}&access_token=${process.env.REACT_APP_FB_ACCESS_TOKEN}`
       );
-      console.log("linnkkkkkk", response.data);
       return response.data;
     },
     {
