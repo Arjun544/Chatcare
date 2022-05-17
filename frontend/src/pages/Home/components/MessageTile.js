@@ -96,7 +96,7 @@ const MessageTile = ({ message, conversationId }) => {
               </Tooltip>
 
               {isEmojiHovered && (
-                <div className="absolute z-50 top-10 right-20">
+                <div className="absolute z-50 top-10 -left-5">
                   <Picker
                     set="facebook"
                     title=""

@@ -4,10 +4,10 @@ import { useQuery } from "react-query";
 
 const LinkPreview = ({ url }) => {
   const {
-    isLoading: isLoading,
+    isLoading,
     data: preview,
-    refetch: refetch,
-    isError: isError,
+    refetch,
+    isError,
   } = useQuery(
     ["link preview", url],
     async () => {
@@ -29,9 +29,13 @@ const LinkPreview = ({ url }) => {
     <div className="flex h-32 w-52  items-center justify-center text-slate-500 tracking-wider text-sm font-semibold">
       Loading Link
     </div>
+  ) : isError ? (
+    <div className="flex h-32 w-52  items-center justify-center text-red-500 tracking-wider text-sm font-semibold">
+      Could not fetch links :(
+    </div>
   ) : (
     <a
-      className="flex flex-col gap-2 items-start"
+      className="flex flex-col gap-2 items-start overflow-hidden"
       href={url}
       target="_blank"
       rel="noopener noreferrer"
@@ -41,7 +45,7 @@ const LinkPreview = ({ url }) => {
         alt={preview.title}
         className="h-32 w-full rounded-2xl"
       />
-      <p className="text-black font-semibold tracking-wider text-sm line-clamp-1 overflow-ellipsis">
+      <p className="text-black font-semibold tracking-wider text-sm line-clamp-1 ">
         {preview.title}
       </p>
       <p className="text-slate-500 font-semibold tracking-wider text-xs">
