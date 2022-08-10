@@ -30,7 +30,7 @@ const Main = () => {
 
   useEffect(() => {
     socket.current = io(socketUrl, {
-      transports: ["polling"],
+      transports: ["websocket", "polling"],
     });
     socket.current.on("connection", () => {
       console.log("connected to server");

@@ -9,6 +9,7 @@ import Checkbox from "@nextui-org/react/checkbox";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../redux/reducers/authSlice";
 import LeftContainer from "../Login/components/LeftContainer";
+import Logo from "../../components/Logo";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -59,6 +60,14 @@ const Login = () => {
 
       {/* Right Container */}
       <div className="flex flex-col bg-white w-full md:w-2/3 items-center justify-evenly">
+        <div className="flex items-center gap-4">
+          <div className="hover:animate-spin">
+            <Logo />
+          </div>
+          <h1 className="text-black font-semibold tracking-wider text-lg">
+            ChatCare
+          </h1>
+        </div>
         <div className="flex flex-col w-full md:w-1/3 px-16 md:px-0">
           <h1 className="font-semibold tracking-wider text-xl">Register now</h1>
           <h2 className="font-semibold tracking-wider text-slate-400">

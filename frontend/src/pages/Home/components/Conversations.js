@@ -27,7 +27,8 @@ const Conversations = ({
       const filteredUsers = activeUsers.filter(
         (newUser) => newUser.id !== user.id
       );
-      setActiveFriends(filteredUsers);
+      console.log(activeUsers);
+      setActiveFriends(activeUsers);
     });
   }, [user.id, socket]);
 

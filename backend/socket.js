@@ -6,7 +6,7 @@ exports.socketInit = (io) => {
     const addUser = (userId, socketId, user) => {
       const checkUser = activeUsers.some((newUser) => newUser.id === userId);
       if (!checkUser) {
-        activeUsers.push({ id: userId, socketId, user: user });
+        activeUsers.push({ ...{ id: userId, socketId, user: user } });
       }
     };
 
@@ -17,6 +17,7 @@ exports.socketInit = (io) => {
     socket.on("addUser", (user) => {
       addUser(user.id, socket.id, user);
       io.emit("activeUsers", activeUsers);
+      console.log(activeUsers);
     });
 
     socket.on("disconnect", () => {
